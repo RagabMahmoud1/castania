@@ -1,0 +1,114 @@
+<odoo>
+    <data>
+        <!--############################# RULES #######################################-->
+        <record id="hr_leave_rule_employee" model="ir.rule">
+            <field name="name">Leaves: employee</field>
+            <field name="model_id" ref="model_hr_leave"/>
+            <field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_user')),(4,ref('hr_custom.group_department_manager'))]"/>
+        </record>
+        <record id="hr_leave_report_rule_employee" model="ir.rule">
+            <field name="name">Leaves Report: employee</field>
+            <field name="model_id" ref="hr_holidays.model_hr_leave_report"/>
+            <field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_user')),(4,ref('hr_custom.group_department_manager'))]"/>
+        </record>
+        <record id="hr_leave_rule_hr" model="ir.rule">
+            <field name="name">Leaves: HR</field>
+            <field name="model_id" ref="model_hr_leave"/>
+            <field name="domain_force">['|',('employee_id.company_id','=',False),('employee_id.company_id','=',user.company_id.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_hr_manager')),(4,ref('hr_custom.group_it_hr_manager')),(4,ref('hr_custom.group_hr_coordinator')),(4,ref('hr_custom.group_hr_supervisor')),(4,ref('hr_custom.group_g_manager')),(4,ref('hr_custom.group_it_g_manager'))]"/>
+        </record>
+        <record id="hr_leave_report_rule_hr" model="ir.rule">
+            <field name="name">Leaves Report: HR</field>
+            <field name="model_id" ref="hr_holidays.model_hr_leave_report"/>
+            <field name="domain_force">['|',('employee_id.company_id','=',False),('employee_id.company_id','child_of',[user.company_id.id])]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_hr_manager')),(4,ref('hr_custom.group_it_hr_manager')),(4,ref('hr_custom.group_hr_coordinator')),(4,ref('hr_custom.group_hr_supervisor')),(4,ref('hr_custom.group_g_manager')),(4,ref('hr_custom.group_it_g_manager'))]"/>
+        </record>
+        <record id="hr_leave_allocation_rule_hr" model="ir.rule">
+            <field name="name">Leaves Allocation: HR</field>
+            <field name="model_id" ref="model_hr_leave_allocation"/>
+            <!--<field name="domain_force">['|',('employee_id.company_id','=',False),'|',('employee_id.company_id','=',user.company_id.id),'|',('department_id.company_id','=',user.company_id.id),('company_id','=',user.company_id.id)]</field>-->
+            <field name="domain_force">['|',('employee_id.company_id','=',user.company_id.id),'|',('department_id.company_id','=',user.company_id.id),('mode_company_id','=',user.company_id.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_hr_manager')),(4,ref('hr_custom.group_it_hr_manager')),(4,ref('hr_custom.group_hr_coordinator')),(4,ref('hr_custom.group_hr_supervisor'))]"/>
+        </record>
+        <record id="hr_leave_allocation_rule_manager" model="ir.rule">
+            <field name="name">Leaves Allocation: Managers</field>
+            <field name="model_id" ref="model_hr_leave_allocation"/>
+            <!--<field name="domain_force">['|',('employee_id.company_id','=',False),'|',('employee_id.company_id','=',user.company_id.id),'|',('department_id.company_id','=',user.company_id.id),('company_id','=',user.company_id.id)]</field>-->
+            <field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),'|',('employee_id.parent_id.parent_id.user_id','=',user.id),('employee_id.parent_id.parent_id.parent_id.user_id','=',user.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_division_manager')),(4,ref('hr_custom.group_section_manager')),(4,ref('hr_custom.group_department_manager'))]"/>
+        </record>
+        <record id="hr_leave_rule_direct_manager" model="ir.rule">
+            <field name="name">Leaves: Direct Manager</field>
+            <field name="model_id" ref="model_hr_leave"/>
+            <field name="domain_force">['|',('employee_id.parent_id.parent_id.user_id','=',user.id),('employee_id.parent_id.user_id','=',user.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_division_manager')),(4,ref('hr_custom.group_section_manager')),(4,ref('hr_custom.group_department_manager'))]"/>
+        </record>
+        <record id="hr_leave_report_rule_direct_manager" model="ir.rule">
+            <field name="name">Leaves Report: Direct Manager</field>
+            <field name="model_id" ref="hr_holidays.model_hr_leave_report"/>
+            <field name="domain_force">['|',('employee_id.parent_id.parent_id.user_id','=',user.id),('employee_id.parent_id.user_id','=',user.id)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_division_manager')),(4,ref('hr_custom.group_section_manager')),(4,ref('hr_custom.group_department_manager'))]"/>
+        </record>
+        <record id="hr_leave_calender_rule_direct_manager" model="ir.rule">
+            <field name="name">Leaves Calender: Direct Manager</field>
+            <field name="model_id" ref="resource.model_resource_calendar_leaves"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4,ref('hr_custom.group_division_manager')),(4,ref('hr_custom.group_section_manager')),(4,ref('hr_custom.group_department_manager')),(4,ref('hr_custom.group_g_manager'))]"/>
+        </record>
+        <!--        <record id="hr_employee_user_rule" model="ir.rule">
+            <field name="name">Internal employee rule</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(4,ref('group_user'))]"/>
+            <field name="domain_force">[('user_id','=',user.id)]</field>
+        </record>
+        <record id="hr_employee_hr_rule" model="ir.rule">
+            <field name="name">HR employee rule</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(6, 0, [ref('group_hr_coordinator'), ref('group_hr_supervisor'),ref('group_hr_manager'),ref('group_it_hr_manager'),ref('group_g_manager'),ref('group_it_g_manager')])]"/>
+            &lt;!&ndash;<field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>&ndash;&gt;
+            <field name="domain_force">['|',('company_id','=',False),('company_id','=',user.company_id.id)]</field>
+        </record>
+        <record id="hr_employee_direct_manager_rule" model="ir.rule">
+            <field name="name">HR direct manager employee rule</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(6, 0, [ref('group_division_manager'), ref('group_section_manager'),ref('group_department_manager')])]"/>
+            <field name="domain_force">[('department_id.manager_id.user_id','=',user.id)]</field>
+        </record>
+        <record id="hr_employee_parent_manager_rule" model="ir.rule">
+            <field name="name">HR parent manager employee rule</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(6, 0, [ref('group_section_manager'),ref('group_department_manager')])]"/>
+            <field name="domain_force">[('department_id.parent_id.manager_id.user_id','=',user.id)]</field>
+        </record>
+        <record id="hr_employee_parent_parent_manager_rule" model="ir.rule">
+            <field name="name">HR parent parent manager employee rule</field>
+            <field name="model_id" ref="model_hr_employee"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(6, 0, [ref('group_department_manager')])]"/>
+            <field name="domain_force">[('department_id.parent_id.parent_id.manager_id.user_id','=',user.id)]</field>
+        </record>
+        <record id="hr_contract_hr_rule" model="ir.rule">
+            <field name="name">HR Contract rule</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            &lt;!&ndash;<field name="global" eval="True"/>&ndash;&gt;
+            <field name="groups" eval="[(6, 0, [ref('group_hr_coordinator'), ref('group_hr_supervisor'),ref('group_hr_manager'),ref('group_it_hr_manager')])]"/>
+            &lt;!&ndash;<field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>&ndash;&gt;
+            <field name="domain_force">['|',('company_id','=',False),('company_id','=',user.company_id.id)]</field>
+        </record>-->
+    </data>
+</odoo>

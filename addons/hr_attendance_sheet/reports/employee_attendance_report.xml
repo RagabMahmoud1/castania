@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="employee_attendance_report" model="ir.actions.report">
+            <field name="name">Employee Attendance</field>
+            <field name="model">hr.attendance</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_attendance_sheet.report_employee_attendance</field>
+            <field name="report_file">hr_attendance_sheet.report_employee_attendance</field>
+            <field name="binding_model_id" ref="model_hr_attendance"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_employee_attendance">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <br/>
+                        <br/>
+                        <h3 style="text-decoration-line:underline;text-align:center;color:black!important;">Attendance
+                            Report
+                        </h3>
+                        <br/>
+                        <br/>
+                        <h4 style="text-decoration-line:underline;text-align:left;color:black!important;">Employee:
+                            <span t-esc="employee"/>
+                        </h4>
+                        <h4 style="text-decoration-line:underline;text-align:right;color:black!important;">From:
+                            <span t-esc="start_date"/>
+                        </h4>
+                        <h4 style="text-decoration-line:underline;text-align:right;color:black!important;">To:
+                            <span t-esc="end_date"/>
+                        </h4>
+                        <br/>
+                        <br/>
+
+                        <table class="table table-bordered mb64">
+                            <thead>
+                                <tr style="color:orange!important;;">
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Check
+                                        In
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Check
+                                        Out
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">
+                                        Duration
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Late
+                                        Time
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Diff
+                                        Time
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Over
+                                        Time
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+                                <tr t-foreach="form" t-as="order">
+
+                                    <tr>
+                                        <td>
+
+                                            <t t-esc="order['check_in']"/>
+                                        </td>
+
+                                        <td>
+
+                                            <t t-esc="order['check_out']"/>
+                                        </td>
+
+                                        <td>
+                                            <t t-esc="order['duration']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="order['late']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="order['diff_time']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="order['over']"/>
+                                        </td>
+
+                                    </tr>
+                                </tr>
+                                <tr style="background-color:#f2f2f2;">
+                                    <td style="text-align:left;">
+                                        Total
+                                    </td>
+                                    <td></td>
+                                    <td>
+
+                                        <t t-esc="total_duration"/>
+                                    </td>
+                                    <td>
+
+                                        <t t-esc="total_late"/>
+                                    </td>
+                                    <td>
+
+                                        <t t-esc="total_diff_time"/>
+                                    </td>
+                                    <td>
+
+                                        <t t-esc="total_over"/>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h3 style="text-decoration-line:underline;text-align:center;color:black!important;">Absence</h3>
+
+                        <table class="table table-bordered mb64">
+                            <thead>
+                                <tr style="color:orange!important;;">
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Absence
+                                        Days
+                                    </th>
+                                    <th style="text-align:left;color:black!important; background-color:#e8e8e8;">Total
+                                        Absence Hours
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        <t t-esc="no_absence"/>
+                                    </td>
+
+                                    <td>
+                                        <t t-esc="tot_absence"/>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div t-if="leave" class="oe_no_empty">
+                            <h3 style="text-decoration-line:underline;text-align:center;color:black!important;">Leaves
+                            </h3>
+
+                            <table class="table table-bordered mb64">
+                                <thead>
+                                    <tr style="color:orange!important;;">
+                                        <th style="text-align:left;color:black!important; background-color:#e8e8e8;">
+                                            Type
+                                        </th>
+                                        <th style="text-align:left;color:black!important; background-color:#e8e8e8;">
+                                            Start
+                                        </th>
+                                        <th style="text-align:left;color:black!important; background-color:#e8e8e8;">
+                                            End
+                                        </th>
+                                        <th style="text-align:left;color:black!important; background-color:#e8e8e8;">
+                                            Des
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="leave" t-as="off">
+                                        <td>
+                                            <t t-esc="off['time_off']"/>
+                                        </td>
+
+                                        <td>
+                                            <t t-esc="off['date_from']"/>
+                                        </td>
+
+                                        <td>
+                                            <t t-esc="off['date_to']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="off['des']"/>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+
+            </t>
+
+        </template>
+    </data>
+</odoo>

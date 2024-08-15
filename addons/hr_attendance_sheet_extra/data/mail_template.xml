@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data >
+        <!--Email template -->
+        <record id="email_template_for_termination" model="mail.template">
+            <field name="name">Absence Notification</field>
+            <field name="model_id" ref="hr_attendance_sheet_extra.model_attendance_sheet_batch"/>
+            <field name="email_from">{{ (user.email_formatted)}}</field>
+            <field name="email_to">{{ object.att_sheet_ids.employee_id.work_email }}</field>
+            <field name="subject">Absence Hour Notification For : {{ object.notice }} </field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p> Dear <t t-out="object.att_sheet_ids.employee_id.name or ''"/>,</p>
+                    <p>This Notify For Your Absent For: <t t-out="object.notice"/>  Hours During Period <t t-out="object.date_from"/> - <t t-out="object.date_from"/></p>
+                    <p>In case of any queries concerning this matter, do not hesitate to contact our hr department.</p>
+                    <br/>
+                    Best Regards,
+                    <br/>
+                    <t t-out="user.name"/>
+                    <br/>
+                </div>
+            </field>
+            <field name="report_name">Absence_Hour_Notification_{{ (object.notice or '') }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

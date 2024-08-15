@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+
+    <record id="hr_leave_allocation_view_form" model="ir.ui.view">
+        <field name="name">hr.leave.allocation.view.form.approvals</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_allocation_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="hr_leave_allocation_view_form_manager" model="ir.ui.view">
+        <field name="name">hr.leave.allocation.view.form.approvals</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_allocation_view_form_manager"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_refuse']" position="replace">
+                <button string="Refuse" name="action_refuse" states="confirm" type="object" groups="hr_custom.group_it_hr_manager"/>
+                <!--**********************************************************************-->
+            </xpath>
+            <xpath expr="//button[@name='action_draft']" position="replace">
+                <button string="Reset to Draft" name="action_draft" type="object" states="refuse" groups="hr_custom.group_hr_coordinator"/>
+            </xpath>
+            <!-- ################### IT CODE #################################-->
+            <xpath expr="//button[@name='action_validate']" position="replace">
+                <button string="Approve" name="action_validate" states="confirm" type="object" groups="hr_custom.group_it_hr_manager" class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//button[@name='action_approve']" position="replace">
+            </xpath>
+            <!-- ############################# END OF IT CODE ################-->
+
+            <xpath expr="//button[@name='action_confirm']" position="after">
+                   <button string="Print Form" name="%(action_client_button_all)d" type="action"  class="oe_highlight" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"/>
+            </xpath>
+            <field name="holiday_type" position="replace">
+                <field name="holiday_type" string="Mode" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager" context="{'employee_id':employee_id}" />
+            </field>
+            <field name="employee_id" position="replace">
+                <field name="employee_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
+                    attrs="{'required': [('holiday_type', '=', 'employee')], 'invisible': [('holiday_type', '!=', 'employee')]}"/>
+            </field>
+            <field name="department_id" position="replace">
+                <field name="department_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
+                    attrs="{'required': [('holiday_type', '=', 'department')], 'invisible': [('holiday_type', 'not in', ('department', 'category'))]}"/>
+            </field>
+            <field name="mode_company_id" position="replace">
+                <field name="mode_company_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
+                    attrs="{'required': [('holiday_type', '=', 'company')], 'invisible': [('holiday_type', '!=', 'company')]}"/>
+            </field>
+        </field>
+    </record>
+        <menuitem
+        id="hr_holidays.menu_open_allocation"
+        name="Allocations Requests"
+        parent="hr_holidays.menu_hr_holidays_my_leaves"
+        action="hr_holidays.hr_leave_allocation_action_my"
+        groups="base.group_no_one"
+        sequence="6"/>
+
+    <menuitem
+        id="hr_holidays.hr_holidays_menu_manager_approve_allocations"
+        name="Allocations"
+        parent="hr_holidays.hr_holidays_menu_manager_approve"
+        groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
+        action="hr_holidays.hr_leave_allocation_action_approve_department"
+        sequence="2"/>
+    <menuitem
+        id="hr_holidays.hr_holidays_menu_manager_all_allocations"
+        name="Allocations"
+        parent="hr_holidays.hr_holidays_menu_manager_all"
+        groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
+        action="hr_holidays.hr_leave_allocation_action_all"
+        sequence="2"/>
+</odoo>

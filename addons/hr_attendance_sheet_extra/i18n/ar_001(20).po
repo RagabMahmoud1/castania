@@ -1,0 +1,240 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_attendance_sheet_extra
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0+e-20221101\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-14 14:07+0000\n"
+"PO-Revision-Date: 2023-02-14 14:07+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_attendance_sheet_extra
+#: model:mail.template,body_html:hr_attendance_sheet_extra.email_template_for_termination
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"                    <p> Dear <t t-out=\"object.att_sheet_ids.employee_id.name or ''\"/>,</p>\n"
+"                    <p>This Notify For Your Absent For: <t t-out=\"object.notice\"/>  Hours During Period <t t-out=\"object.date_from\"/> - <t t-out=\"object.date_from\"/></p>\n"
+"                    <p>In case of any queries concerning this matter, do not hesitate to contact our hr department.</p>\n"
+"                    <br/>\n"
+"                    Best Regards,\n"
+"                    <br/>\n"
+"                    <t t-out=\"user.name\"/>\n"
+"                    <br/>\n"
+"                </div>\n"
+"            "
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:mail.template,subject:hr_attendance_sheet_extra.email_template_for_termination
+msgid "Absence Hour Notification For : {{ object.notice }} "
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:mail.template,name:hr_attendance_sheet_extra.email_template_for_termination
+msgid "Absence Notification"
+msgstr "إشعار الغياب"
+
+#. module: hr_attendance_sheet_extra
+#: model:mail.template,report_name:hr_attendance_sheet_extra.email_template_for_termination
+msgid "Absence_Hour_Notification_{{ (object.notice or '') }}"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Approve Sheets"
+msgstr "الموافقة على الكشوفات"
+
+#. module: hr_attendance_sheet_extra
+#: code:addons/hr_attendance_sheet_extra/models/att_sheet_batch.py:0
+#, python-format
+msgid "Attendance Batch of %s  Department for %s"
+msgstr "دفعة الحضور %s للقسم%s "
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet__batch_id
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Attendance Sheet Batch"
+msgstr "دفعة كشف الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.actions.act_window,name:hr_attendance_sheet_extra.action_attendance_sheet_batch_action
+msgid "Attendance Sheet Batches"
+msgstr "دفعات كشف الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__att_sheet_ids
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Attendance Sheets"
+msgstr "كشوفات الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields.selection,name:hr_attendance_sheet_extra.selection__attendance_sheet_batch__state__att_gen
+msgid "Attendance Sheets Generated"
+msgstr "تم إنشاء كشوفات الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields.selection,name:hr_attendance_sheet_extra.selection__attendance_sheet_batch__state__att_sub
+msgid "Attendance Sheets Submitted"
+msgstr "تم إرسال كشوفات الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.ui.menu,name:hr_attendance_sheet_extra.menu_hr_attendance_sheet_batch
+msgid "Attendance sheet Batches"
+msgstr "دفعات كشف الحضور"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields.selection,name:hr_attendance_sheet_extra.selection__attendance_sheet_batch__state__done
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__date_from
+msgid "Date From"
+msgstr "من تاريخ"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__date_to
+msgid "Date To"
+msgstr "إلى تاريخ"
+
+#. module: hr_attendance_sheet_extra
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Department ID"
+msgstr "معرف القسم"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields.selection,name:hr_attendance_sheet_extra.selection__attendance_sheet_batch__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: hr_attendance_sheet_extra
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Generate Sheets"
+msgstr "إنشاء الكشوفات"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model,name:hr_attendance_sheet_extra.model_attendance_sheet
+msgid "Hr Attendance Sheet"
+msgstr "كشف حضور الموارد البشرية"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__model_id
+msgid "Model"
+msgstr "نموذج"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__notice
+msgid "Notice"
+msgstr "ملاحظة"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__payslip_batch_id
+msgid "Payslip Batch"
+msgstr "دفعة قسائم المرتبات"
+
+#. module: hr_attendance_sheet_extra
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Period"
+msgstr "فترة"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__department_id
+msgid "Project Name"
+msgstr "إسم المشروع"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__user_ids
+msgid "Scheduler Users"
+msgstr "مجدول المستخدمين"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__state
+msgid "Status"
+msgstr "الحالة"
+
+#. module: hr_attendance_sheet_extra
+#: model_terms:ir.ui.view,arch_db:hr_attendance_sheet_extra.attendance_sheet_batch_form_view
+msgid "Submit Sheets"
+msgstr "إرسال الكشوفات"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__notice_termination
+msgid "Termination"
+msgstr "إيقاف العمل"
+
+#. module: hr_attendance_sheet_extra
+#: code:addons/hr_attendance_sheet_extra/models/att_sheet_batch.py:0
+#, python-format
+msgid ""
+"Termination Hours Must Be Bigger Than Zero Please Review Your Configuration "
+"!"
+msgstr "ساعات إيقاف العمل يجب أن تكون أكبر من صفر, فضلاً مراجعة ضبط التهيئة"
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__termination_rule
+msgid "Termination Rule"
+msgstr "قاعدة إيقاق العمل"
+
+#. module: hr_attendance_sheet_extra
+#: code:addons/hr_attendance_sheet_extra/models/att_sheet_batch.py:0
+#, python-format
+msgid "There is no  Employees In This Department"
+msgstr "لا يوجد موظف في هذا القسم"
+
+#. module: hr_attendance_sheet_extra
+#: code:addons/hr_attendance_sheet_extra/models/att_sheet_batch.py:0
+#, python-format
+msgid "There is no  Running contracts for :%s "
+msgstr "لا يوجد عقد جاري ل:%s "
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model,name:hr_attendance_sheet_extra.model_attendance_sheet_batch
+msgid "attendance_sheet_batch"
+msgstr ""
+
+#. module: hr_attendance_sheet_extra
+#: model:ir.model.fields,field_description:hr_attendance_sheet_extra.field_attendance_sheet_batch__name
+msgid "name"
+msgstr "إسم"

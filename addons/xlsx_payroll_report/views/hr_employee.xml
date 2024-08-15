@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+###########################################
+
+        <record id="bank_list_form_view" model="ir.ui.view">
+            <field name="name">bank.list.form.view</field>
+            <field name="model">bank.list</field>
+            <field name="arch" type="xml">
+                <form string="Bank Code">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="bank_list_tree_view" model="ir.ui.view">
+            <field name="name">bank.list.tree.view</field>
+            <field name="model">bank.list</field>
+            <field name="arch" type="xml">
+                <tree string="Bank Code">
+                    <field name="name"/>
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_bank_list" model="ir.actions.act_window">
+            <field name="name">Bank Code</field>
+            <field name="res_model">bank.list</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Create a new document
+                </p>
+            </field>
+        </record>
+
+         <menuitem id="bank_list_setting"
+              name="Banks Code"
+              parent="hr.menu_hr_root"
+              action="action_bank_list"
+              sequence="40"/>
+        ####################################################################
+        <record id="res_partner_bank_inherit" model="ir.ui.view">
+            <field name="name">res.partner.bank.form</field>
+            <field name="model">res.partner.bank</field>
+            <field name="inherit_id" ref="base.view_partner_bank_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='acc_number']" position="after">
+                    <field name="bank_code"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

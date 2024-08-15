@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="hr_employee_report_setting_tree">
+            <field name="name">Employee Reports Setting</field>
+            <field name="model">hr.employee.report.setting</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="company_id" string="Company"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="hr_employee_report_setting_form">
+            <field name="name">Employee Report Setting</field>
+            <field name="model">hr.employee.report.setting</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group>
+                            <field name="company_id" string="Company"/>
+                        </group>
+
+                        <!--<group>
+                            <group>
+                                <field name="emp_no"/>
+                                <field name="name"/>
+                                <field name="country_id"/>
+                                <field name="gender"/>
+                                <field name="marital"/>
+                                <field name="children"/>
+                            </group>
+                            <group>
+                                <field name="place_of_birth"/>
+                                <field name="country_of_birth"/>
+                                <field name="birthday"/>
+                                <field name="ssnid"/>
+                                <field name="sinid"/>
+                                <field name="identification_id"/>
+                            </group>
+                        </group>-->
+                        <notebook>
+                            <page string="Report Columns">
+                                <field name="column_ids">
+                                    <tree editable="bottom">
+                                        <field name="sequence"/>
+                                        <field name="field"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="hr_employee_report_setting_action_window">
+            <field name="name">Employee Report Setting</field>
+            <field name="res_model">hr.employee.report.setting</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Employee Report Setting" id="hr_employee_report_setting_menu" groups="group_hr_coordinator,group_hr_supervisor"
+                  action="hr_employee_report_setting_action_window" parent="hr.menu_human_resources_configuration"/>
+
+        <!--    <menuitem name="Employee Custody" id="hr_employee_custody_menu" groups="group_admin_manager"-->
+        <!--              action="hr_employee_custody_action_window" parent="hr.menu_hr_root"/>-->
+
+    </data>
+</odoo>

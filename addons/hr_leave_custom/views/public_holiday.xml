@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- inherit resource.resource_calendar_leave_tree -->
+    <record id="hr_leave_custom_public_holiday_tree" model="ir.ui.view">
+        <field name="name">hr.leave.custom.public.holiday.tree</field>
+        <field name="model">resource.calendar.leaves</field>
+        <field name="inherit_id" ref="resource.resource_calendar_leave_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_from']" position="before">
+                <field name="holiday_type"/>
+                <field name="fixed"/>
+                <field name="presence_type"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

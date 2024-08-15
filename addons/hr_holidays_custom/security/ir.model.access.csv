@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_leave_salary_setting_hrc,hr_leave_salary_setting_hrc,model_hr_leave_salary_setting,hr_custom.group_hr_coordinator,1,1,1,1
+access_hr_leave_type_hrc,hr_leave_type_hrc,model_hr_leave_type,hr_custom.group_hr_coordinator,1,1,1,1
+access_hr_leave_hrc,hr_leave_hrc,model_hr_leave,hr_custom.group_hr_coordinator,1,1,1,0
+access_hr_leave_allocation_hrc,hr_leave_allocation_hrc,model_hr_leave_allocation,hr_custom.group_hr_coordinator,1,1,1,0
+,,,,,,,
+hr_holidays.access_hr_holidays_employee_request,hr.holidays.employee.request,model_hr_leave,base.group_user,1,1,1,0
+,,,,,,,
+,,,,,,,
+access_hr_leave_usr,hr_leave_usr,model_hr_leave,hr_custom.group_user,1,1,1,0
+,,,,,,,
+access_resource_calendar_leave_usr,resource_calendar_leave_usr,hr_holidays.model_resource_calendar_leaves,hr_custom.group_user,1,0,0,0
+,,,,,,,
+access_hr_leave_salary_setting_hrs,hr_leave_salary_setting_hrs,model_hr_leave_salary_setting,hr_custom.group_hr_supervisor,1,1,1,1
+access_hr_leave_type_hrs,hr_leave_type_hrs,model_hr_leave_type,hr_custom.group_hr_supervisor,1,1,1,1
+access_hr_leave_hrs,hr_leave_hrs,model_hr_leave,hr_custom.group_hr_supervisor,1,1,1,0
+access_hr_leave_allocation_hrs,hr_leave_allocation_hrs,model_hr_leave_allocation,hr_custom.group_hr_supervisor,1,1,1,0

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--<record id="hr_payroll_contract_view_form" model="ir.ui.view">
+        <field name="name">hr.contract.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_payroll.hr_contract_form_inherit"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='struct_id']" position="replace">
+                </xpath>
+            </data>
+        </field>
+    </record>-->
+
+    <record id="hr_contract_view_form" model="ir.ui.view">
+            <field name="name">hr.contract.form</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+            <data>
+                 <xpath expr="//field[@name='trial_date_end']" position="before">
+                        <field name="date_end_alarm"/>
+                 </xpath>
+                <xpath expr="//field[@name='reported_to_secretariat']" position="replace">
+                    <!--<field name="bonus_structure_id"/>-->
+                </xpath>
+                <!--<xpath expr="//field[@name='type_id']" position="after">
+                    <field name="user_id"/>
+                </xpath>-->
+                <!--<xpath expr="//field[@name='job_id']" position="after">
+                    <field name="struct_id" required="0"/>
+                    <field name="bonus_structure_id"/>
+                </xpath>-->
+                <!--<xpath expr="//field[@name='company_id']" position="after">
+                    <field name="user_id"/>
+                </xpath>-->
+                <!--<xpath expr="//group[@name='salary_and_advantages']" position="replace">
+                    <group name="salary_and_advantages" string="Monthly Advantages in Cash">
+                        <label for="total_salary"/>
+                        <div class="o_row" name="total_salary">
+                            <field name="total_salary" nolabel="1" required="1"/>
+                            <span>/ month</span>
+                        </div>
+                        <label for="wage"/>
+                        <div class="o_row" name="wage">
+                            <field name="wage" nolabel="1"/>
+                            <span>/ month</span>
+                        </div>
+                        <label for="bonus"/>
+                        <div class="o_row" name="bonus">
+                            <field name="bonus" nolabel="1"/>
+                            <span>/ month</span>
+                        </div>
+                        &lt;!&ndash;<field name="advantages" nolabel="1" placeholder="Advantages..." colspan="2" invisible="1"/>&ndash;&gt;
+                    </group>
+                </xpath>
+		        <xpath expr="//page[@name='information']"  position="after">
+                    <page string="Incentive" name="incentive">
+                        <group string="Incentive Details">
+                            <group>
+                                <field name="presidential_incentive" class="oe_inline"/>
+                                <field name="CEO_incentive" class="oe_inline"/>
+                                <field name="miles_incentive" class="oe_inline"/>
+                            </group>
+                            <group>
+                                <field name="fuel_incentive" class="oe_inline"/>
+                                <field name="phone_incentive" class="oe_inline"/>
+                                <field name="new_incentive" class="oe_inline"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>-->
+                <field name="resource_calendar_id" position="after">
+                        <field name="legal_leave_days"/>
+                </field>
+            </data>
+            </field>
+    </record>
+    <menuitem
+            id="hr.menu_hr_root"
+            name="Employees"
+            web_icon="hr_custom,static/description/icon.png"/>
+</odoo>

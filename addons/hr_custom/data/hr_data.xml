@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="hr.employee.degree" id="degree_bachelor">
+            <field name="name">Bachelor Degree</field>
+            <field name="sequence">2</field>
+        </record>
+        <record model="hr.employee.degree" id="degree_licenced">
+            <field name="name">Master Degree</field>
+            <field name="sequence">3</field>
+        </record>
+        <record model="hr.employee.degree" id="degree_bac5">
+            <field name="name">Doctoral Degree</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="ir_cron_data_contract_update_state" model="ir.cron">
+            <field name="name">HR Contract: Notify Alarm Date</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model.send_notification()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+<!--        <record model="mail.channel" id="contract_end_date_notification_id">-->
+<!--            <field name="name">contract Notification</field>-->
+<!--            <field name="description">Reorder Product</field>-->
+<!--            <field name="email_send">True</field>-->
+<!--            <field name="public">private</field>-->
+<!--            <field name="group_ids"  eval="[(6, 0, [ref('hr_custom.group_hr_supervisor')])]" />-->
+<!--        </record>-->
+    </data>
+</odoo>

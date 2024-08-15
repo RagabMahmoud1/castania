@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="attendance_from_view" model="ir.ui.view">
+            <field name="name">attendance.report.from.view</field>
+            <field name="model">attendance.report</field>
+            <field name="arch" type="xml">
+                <form string="Attendance Report">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="employee_id"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_att_report" model="ir.actions.act_window">
+            <field name="name">Attendance Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">attendance.report</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="attendance_from_view"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_att_report" name="Attendance Report" id="menu_attendance_report" parent="hr_attendance_sheet.root_menu_employee_attendance_report" sequence="7"/>
+
+    </data>
+</odoo>

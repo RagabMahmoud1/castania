@@ -1,0 +1,105 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="hr_custody_type_tree">
+            <field name="name">Custody Type</field>
+            <field name="model">hr.custody.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="total_no"/>
+                    <field name="available_no"/>
+                    <field name="taken_no"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="hr_custody_type_form">
+            <field name="name">Custody Type</field>
+            <field name="model">hr.custody.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Print Form" name="%(action_client_button)d" type="action"  class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="total_no"/>
+                            </group>
+                            <group>
+                                <field name="available_no"/>
+                                <field name="taken_no"/>
+                            </group>
+                        </group>
+                        <notebook colspan="4">
+                                <page string="Employees">
+                                    <field name="custody_ids">
+                                        <tree editable="bottom">
+                                            <field name="employee_id"/>
+                                            <field name="delivery_date"/>
+                                            <field name="receive_date"/>
+                                            <field name="state"/>
+                                            <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" states="draft"/>
+                                            <button string="Receive from employee" type="object" name="received"  class="oe_highlight" states="deliver"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="Notes">
+                                    <separator string="Notes"/>
+                                    <field name="note" nolabel="1"/>
+                                </page>
+                            </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="hr_custody_type_action_window">
+            <field name="name">Custody Type</field>
+            <field name="res_model">hr.custody.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--        #######################################################################################-->
+        <record id="inherit_view_employee_form_extra" model="ir.ui.view">
+            <field name="name">hr employee form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='hr_settings']" position="before">
+                    <page name="employee_custody"  string="Employee Custody">
+                        <group>
+                            <field name="custody_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="custody_type_id"/>
+                                    <field name="delivery_date"/>
+                                    <field name="receive_date"/>
+                                    <field name="state"/>
+                                    <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" states="draft"/>
+                                    <button string="Receive from employee" type="object" name="received"  class="oe_highlight" states="deliver"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <menuitem name="Custody Type" id="hr_custody_type_menu"
+                  action="hr_custody_type_action_window" parent="hr.menu_human_resources_configuration" sequence="300"
+/>
+
+        <!--    <menuitem name="Employee Custody" id="hr_employee_custody_menu" groups="group_admin_manager"-->
+        <!--              action="hr_employee_custody_action_window" parent="hr.menu_hr_root"/>-->
+
+    </data>
+</odoo>

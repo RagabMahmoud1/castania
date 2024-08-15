@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Employee -->
+        <record id="view_employee_form" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                    <xpath expr="//group[6]" position="replace"/>
+                    <xpath expr="//page[@name='personal_information']" position="after">
+                        <page name="qualifications" string="Qualifications">
+                            <field name="qualification_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="university_id"/>
+                                    <field name="location"/>
+                                    <field name="graduation_date"/>
+                                    <field name="major"/>
+                                    <field name="general_grade"/>
+                                    <field name="degree_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Additional Certificate">
+                            <field name="certificate_additional_ids">
+                                <tree editable="bottom">
+                                    <field name="certificate_id"/>
+                                    <field name="earned_date"/>
+                                    <field name="certificate_institution"/>
+                                    <field name="general_grade"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Training  and Courses">
+                            <field name="training_courses_ids">
+                                <tree editable="bottom">
+                                    <field name="course_name"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="institution_name"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </xpath>
+            </field>
+        </record>
+        <!-- Degree Tree View -->
+        <record model="ir.ui.view" id="hr_employee_degree_tree">
+            <field name="name">hr.employee.degree.tree</field>
+            <field name="model">hr.employee.degree</field>
+            <field name="arch" type="xml">
+                <tree string="Degree">
+                    <field name="sequence"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Degree Form View -->
+        <record model="ir.ui.view" id="hr_employee_degree_form">
+            <field name="name">hr.employee.degree.form</field>
+            <field name="model">hr.employee.degree</field>
+            <field name="arch" type="xml">
+                <form string="Degree">
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence" groups="base.group_no_one"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+<!--            inherit replace for vehicle + emp no -->
+        <record id="view_employee_form_new" model="ir.ui.view">
+            <field name="name">	hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vehicle']" position="replace"/>
+                <xpath expr="//field[@name='category_ids']" position="before">
+                    <div class="oe_title">
+                        <!--<label for="emp_no"/>-->
+                        <h1>
+                            <field name="emp_no"/>
+                        </h1>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_employee_tree_new" model="ir.ui.view">
+            <field name="name">	hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="emp_no"/>
+                </xpath>
+            </field>
+        </record>
+
+	<record id="view_employee_form_new_age" model="ir.ui.view">
+            <field name="name">	hr.employee.form.age</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='country_of_birth']" position="replace">
+                    <field name="age"/>
+                </xpath>
+                <xpath expr="//field[@name='job_title']" position="after">
+                    <field name="start_date"/>
+                    <field name="service_years" string="Service Years" class="oe_inline"/>
+                    <field name="service_months" string="Service Months" class="oe_inline"/>
+                    <field name="service_days" string="Service Days" class="oe_inline"/>
+
+                </xpath>
+                <xpath expr="//field[@name='medic_exam']" position="after">
+                    <field name="medical_category"/>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="after">
+                    <field name="nationality_type"/>
+                    <field name="mother_name"/>
+                </xpath>
+                <!--<xpath expr="//field[@name='address_home_id']" position="replace">
+                    <field name="address_home_id" invisible="1"/>
+                </xpath>-->
+                <xpath expr="//field[@name='address_home_id']" position="after">
+                    <field name="address_home"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!--        inherit to add sequence to employees kanban view-->
+        <record model="ir.ui.view" id="hr_employee_sequence_kanban">
+            <field name="name">hr.employee.kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <div>
+                        <span t-if="record.emp_no.raw_value"><field name="emp_no"/></span>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="inherit_employee_appraisal_form">
+            <field name="name">inherit apprasial form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr_appraisal.hr_employee_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='%(hr_appraisal.open_view_hr_appraisal_tree2)d']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+	
+	<!--<record id="view_employee_form_new_year" model="ir.ui.view">
+            <field name="name">hr.employee.form.year</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='medic_exam']" position="after">
+                    <field name="year_num"/>
+                </xpath>
+            </field>
+        </record>-->
+
+        <!-- Degree Action -->
+        <record id="hr_employee_degree_action" model="ir.actions.act_window">
+            <field name="name">Degree</field>
+            <field name="res_model">hr.employee.degree</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr_employee_degree_tree"/>
+        </record>
+        
+        <menuitem
+            id="menu_hr_employee_degree"
+            name="Degrees"
+            parent="hr.menu_human_resources_configuration"
+            action="hr_employee_degree_action"
+            sequence="5" groups="group_hr_coordinator,group_hr_supervisor"/>
+
+        <menuitem
+            action="hr.hr_department_tree_action"
+            id="hr.menu_hr_department_tree"
+            parent="hr.menu_hr_root"
+            sequence="90"
+            groups="group_hr_coordinator,group_hr_supervisor"/>
+
+        <!--<menuitem
+            id="hr_menu_contract_type"
+            action="action_hr_contract_type"
+            parent="hr.menu_human_resources_configuration"
+            sequence="3"
+            groups="base.group_no_one"/>
+
+        <menuitem
+            id="hr_menu_contract"
+            name="Contracts"
+            action="action_hr_contract"
+            parent="hr.menu_hr_root"
+            sequence="4"
+            groups="hr_contract.group_hr_contract_manager"/>-->
+    </data>
+</odoo>

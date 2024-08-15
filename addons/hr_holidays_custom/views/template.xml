@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+
+    <record id="action_client_button" model="ir.actions.client">
+        <field name="tag">call_button_hr_holidays_custom</field>
+        <field name="name">Call JS Button onclick</field>
+    </record>
+    <record id="action_client_button_all" model="ir.actions.client">
+        <field name="tag">call_button_hr_leave_allocation_views</field>
+        <field name="name">Call JS Button onclick</field>
+    </record>
+</odoo>
