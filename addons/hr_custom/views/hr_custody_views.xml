@@ -40,8 +40,8 @@
                                             <field name="delivery_date"/>
                                             <field name="receive_date"/>
                                             <field name="state"/>
-                                            <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" states="draft"/>
-                                            <button string="Receive from employee" type="object" name="received"  class="oe_highlight" states="deliver"/>
+                                            <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" invisible="state != 'draft'"/>
+                                            <button string="Receive from employee" type="object" name="received"  class="oe_highlight" invisible="state != 'deliver'"/>
                                         </tree>
                                     </field>
                                 </page>
@@ -63,7 +63,6 @@
         <record model="ir.actions.act_window" id="hr_custody_type_action_window">
             <field name="name">Custody Type</field>
             <field name="res_model">hr.custody.type</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -82,8 +81,8 @@
                                     <field name="delivery_date"/>
                                     <field name="receive_date"/>
                                     <field name="state"/>
-                                    <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" states="draft"/>
-                                    <button string="Receive from employee" type="object" name="received"  class="oe_highlight" states="deliver"/>
+                                    <button string="Deliver to employee" type="object" name="delivered"  class="oe_highlight" invisible="state != 'draft'"/>
+                                    <button string="Receive from employee" type="object" name="received"  class="oe_highlight" invisible="state != 'deliver'"/>
                                 </tree>
                             </field>
                         </group>

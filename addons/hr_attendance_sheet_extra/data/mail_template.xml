@@ -20,7 +20,7 @@
                     <br/>
                 </div>
             </field>
-            <field name="report_name">Absence_Hour_Notification_{{ (object.notice or '') }}</field>
+            <!-- <field name="report_name">Absence_Hour_Notification_{{ (object.notice or '') }}</field> -->
             <field name="auto_delete" eval="True"/>
         </record>
 

@@ -59,7 +59,6 @@
         <record model="ir.actions.act_window" id="hr_employee_report_setting_action_window">
             <field name="name">Employee Report Setting</field>
             <field name="res_model">hr.employee.report.setting</field>
-            <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
         <menuitem name="Employee Report Setting" id="hr_employee_report_setting_menu" groups="group_hr_coordinator,group_hr_supervisor"

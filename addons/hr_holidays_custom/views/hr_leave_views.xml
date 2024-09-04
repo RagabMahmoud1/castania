@@ -23,25 +23,36 @@
                     </field>-->
                 <xpath expr="//header" position="replace">
                     <header>
-                    <button string="Submit" name="action_confirm" states="draft" type="object" class="oe_highlight" group="hr_custom.group_hr_coordinator,hr_custom.group_direct_manager"/>
-                        <!--<button string="Approve" name="action_approve" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', '!=', 'confirm')]}" groups="hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager"/>-->
-                        <button string="Approve" name="action_approve" type="object" class="oe_highlight" attrs="{'invisible':['|',('approval_user','=',False),('state','!=','confirm')]}" groups="hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager"/>
-                        <button string="Second Approve" name="action_validate" attrs="{'invisible':['|',('approval_user','=',False),('state','!=','validate1')]}" type="object"  class="oe_highlight" groups="hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager"/>
+                    <button string="Submit" name="action_confirm" invisible="state != 'draft'" type="object" class="oe_highlight" group="hr_custom.group_hr_coordinator,hr_custom.group_direct_manager"/>
+                        <button string="Approve" name="action_approve" type="object" class="oe_highlight" 
+                        invisible="approval_user == False or state != 'confirm'"
+                        groups="hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager"/>
+                        <button string="Second Approve" name="action_validate" 
+                        invisible="approval_user == False or state != 'validate1'"
+                        type="object"  
+                        class="oe_highlight" groups="hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager"/>
                         <!--<button string="Approve" name="action_approve1" states="validate" type="object"  class="oe_highlight" groups="hr_custom.group_hr_coordinator"/>
                         <button string="Approve" name="action_approve2" states="approve" type="object"  class="oe_highlight" groups="hr_custom.group_hr_supervisor"/>
                         <button string="Approve" name="action_done" states="approve1" type="object"  class="oe_highlight" groups="hr_custom.group_hr_manager"/>-->
                         <!--<button string="Refuse" name="action_refuse"  type="object" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm','validate','validate1','approve','approve1'))]}" groups="hr_custom.group_direct_manager,hr_custom.group_director_manager,hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager"/>-->
-                        <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" attrs="{'invisible': ['|',('approval_user','=',False), ('state', '!=', 'confirm')]}" groups="hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager"/>
-                        <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" attrs="{'invisible': ['|', ('approval_user','=',False), ('state', '!=','validate1')]}" groups="hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager"/>
+                        <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" 
+                        invisible="approval_user == False or state != 'confirm'"
+                        groups="hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager"/>
+                        <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" 
+                        invisible="approval_user == False or state != 'validate1'"
+                        groups="hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager"/>
                         <!--<button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', '!=','validate')]}" groups="hr_custom.group_hr_coordinator"/>
                         <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', '!=','approve')]}" groups="hr_custom.group_hr_supervisor"/>
                         <button string="Refuse" name="action_refuse"  type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', '!=','approve1')]}" groups="hr_custom.group_hr_manager"/>-->
                         <!--########################################################################-->
                         <button string="Reset to Draft" name="action_draft" type="object"
-                        attrs="{'invisible': ['|', ('can_reset', '=', False), ('state', 'not in', ['refuse'])]}" group="hr_custom.group_hr_coordinator"/>
+                        invisible="can_reset == False or state != 'refuse'"
+                        group="hr_custom.group_hr_coordinator"/>
                         <!--######################## IT CODE ##############################-->
-                        <button string="Approve" name="action_approve3" states="validate,validate1" type="object"  class="oe_highlight" groups="hr_custom.group_it_hr_manager"/>
-                        <button string="CEO Approval" name="action_approve4" type="object" attrs="{'invisible': ['|',('state','!=','approve2'),('check_ceo_approval','=', False)]}" class="oe_highlight" groups="hr_custom.group_it_g_manager"/>
+                        <button string="Approve" name="action_approve3" invisible="state not in ['validate', 'validate1']" type="object"  class="oe_highlight" groups="hr_custom.group_it_hr_manager"/>
+                        <button string="CEO Approval" name="action_approve4" type="object" 
+                        invisible="state != 'approve2' or check_ceo_approval == False"
+                        class="oe_highlight" groups="hr_custom.group_it_g_manager"/>
 
                         <!--####################### END OF CODE ###########################-->
                         <button string="Print Form" name="%(action_client_button)d" type="action"  class="oe_highlight" group="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"/>
@@ -60,32 +71,36 @@
         <field name="inherit_id" ref="hr_holidays.hr_leave_view_form_manager"/>
         <field name="arch" type="xml">
             <data>
+                
                 <field name="holiday_type" position="replace">
-                    <field name="holiday_type" string="Mode" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor"/>
+                    <field name="holiday_type" string="Mode" />
                 </field>
-                <field name="employee_id" position="replace">
-                    <field name="employee_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager" attrs="{'required': [('holiday_type', '=', 'employee')],'invisible': [('holiday_type', '!=', 'employee')]}"/>
-                </field>
+                <!-- <field name="employee_id" position="replace">
+                    <field name="employee_id"  
+                    
+                    required="holiday_type == 'employee'" invisible="holiday_type != 'employee'"/>
+                    
+                </field> -->
                 <field name="mode_company_id" position="replace">
-                    <field name="mode_company_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" attrs="{'required': [('holiday_type', '=', 'company')],'invisible': [('holiday_type', '!=', 'company')]}"/>
+                    <field name="mode_company_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" 
+                    required="holiday_type == 'company'" invisible="holiday_type != 'company'"
+                    />
                 </field>
                 <field name="category_id" position="replace">
-                    <field name="category_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" attrs="{'required': [('holiday_type', '=', 'category')],'invisible': [('holiday_type', '!=','category')]}"/>
+                    <field name="category_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" 
+                    
+                    required="holiday_type == 'category'" invisible="holiday_type != 'category'"
+                    />
                 </field>
                 <field name="department_id" position="replace">
-                    <field name="department_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" attrs="{'required': [('holiday_type', '=', 'department')],'invisible': [('holiday_type', 'not in', ('employee', 'department'))]}"/>
+                    <field name="department_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" invisible="holiday_type not in ['employee', 'department']" required="holiday_type == 'department'"/>
                 </field>
-                <field name="payslip_status" position="replace">
+                <!-- <field name="payslip_status" position="replace">
                     <field name="payslip_status" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor" widget="toggle_button"/>
-                </field>
-                <xpath expr="//field[@name='payslip_status']" position="after">
-                    <field name="substitute_employee" attrs="{'invisible': [('state', '=', 'confirm')]}" groups="hr_custom.group_department_manager,hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_it_hr_manager"/>
-                </xpath>
-                <xpath expr="//div[@groups='hr_holidays.group_hr_holidays_manager']" position="replace">
-                    <div groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_division_manager,hr_custom.group_section_manager,hr_custom.group_department_manager,hr_custom.group_g_manager,hr_custom.group_it_g_manager,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager">
-                        <separator string="Comment by Manager"/>
-                        <field name="report_note" placeholder="e.g. Report to the next month..."/>
-                    </div>
+                </field> -->
+                <xpath expr="//header" position="inside">
+                    <field name="state" invisible="1"/>
+                    <field name="substitute_employee" invisible="state == 'confirm'" groups="hr_custom.group_department_manager,hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_it_hr_manager"/>
                 </xpath>
             </data>
         </field>
@@ -94,7 +109,7 @@
         id="hr_holidays.menu_open_company_allocation"
         name="Summary"
         parent="hr_holidays.menu_hr_holidays_report"
-        action="hr_holidays.open_company_allocation"
+        action="hr_holidays.hr_leave_allocation_action_all"
         sequence="21"/>
     <menuitem
         id="hr_holidays.menu_hr_holidays_approvals"

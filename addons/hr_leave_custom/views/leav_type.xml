@@ -11,6 +11,7 @@
                 <field name="holiday_type"/>
                 <field name="fixed"/>
                 <field name="presence_type"/>
+                <field name="presence_type_id"/>
             </xpath>
         </field>
     </record>

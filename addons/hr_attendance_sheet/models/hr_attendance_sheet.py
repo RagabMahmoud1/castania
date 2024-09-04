@@ -24,6 +24,18 @@ from odoo.addons.resource.models.utils import float_to_time, HOURS_PER_DAY
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TIME_FORMAT = "%H:%M:%S"
 
+class HRLeaveType(models.Model):
+    _inherit = 'hr.leave.type'
+
+    presence_type_id = fields.Selection([
+        ('upl', 'UPL'),
+        ('abd', 'ABD'),
+        ('aul', 'AUL'),
+        ('sna', 'SNA'),
+        ('uph', 'UPH'),
+    ], string='Presence Type', default=False)
+    
+        
 
 class AttendanceSheet(models.Model):
     _name = 'attendance.sheet'
@@ -86,6 +98,9 @@ class AttendanceSheet(models.Model):
     tot_worked_hour = fields.Float(compute="_compute_sheet_total",
                                    string="Total Late In", readonly=True,
                                    store=True)
+    tot_worked_days = fields.Float(compute="_compute_sheet_total",
+                                      string="Total Worked Days", readonly=True,
+                                        )
     tot_leave = fields.Float(compute="_compute_sheet_total",
                                    string="Total Leave", readonly=True,
                                    store=True)
@@ -169,6 +184,25 @@ class AttendanceSheet(models.Model):
                 "Employee %s does not have attendance policy" % employee.name))
         self.att_policy_id = self.contract_id.att_policy_id
 
+    def write(self, values):
+        res = super(AttendanceSheet, self).write(values)
+        
+        if not self.contract_id:
+            if self.employee_id and self.date_from and self.date_to:
+                employee = self.employee_id
+                date_from = self.date_from
+                date_to = self.date_to
+                contracts = employee._get_contracts(date_from, date_to)
+                if not contracts:
+                    raise ValidationError(
+                        _('There Is No Valid Contract For Employee %s' % employee.name))
+                self.contract_id = contracts[0]
+                if not self.contract_id.att_policy_id:
+                    raise ValidationError(_(
+                        "Employee %s does not have attendance policy" % employee.name))
+                self.att_policy_id = self.contract_id.att_policy_id
+        return res
+    
     @api.depends('line_ids.overtime', 'line_ids.diff_time', 'line_ids.late_in')
     def _compute_sheet_total(self):
         """
@@ -176,6 +210,10 @@ class AttendanceSheet(models.Model):
         :return:
         """
         for sheet in self:
+            
+            # compute tot_worked_days
+            worked_days = sheet.line_ids.filtered(lambda l: l.worked_hours > 0)
+            sheet.tot_worked_days = len(worked_days)
             # Compute Total Overtime
             overtime_lines = sheet.line_ids.filtered(lambda l: l.overtime > 0)
             sheet.tot_overtime = sum([l.overtime for l in overtime_lines])
@@ -952,6 +990,12 @@ class AttendanceSheetLine(models.Model):
         ('5', 'Saturday'),
         ('6', 'Sunday')
     ], 'Day of Week', required=True, index=True, )
+    
+    day_name = fields.Char("Day Name", compute='_compute_day_name')
+    @api.depends('day')
+    def _compute_day_name(self):
+        for rec in self:
+            rec.day_name = dict(self._fields['day'].selection).get(rec.day)
     att_sheet_id = fields.Many2one(comodel_name='attendance.sheet',
                                    ondelete="cascade",
                                    string='Attendance Sheet', readonly=True)
@@ -959,6 +1003,17 @@ class AttendanceSheetLine(models.Model):
                                   string='Employee')
     pl_sign_in = fields.Float("Planned sign in", readonly=True)
     pl_sign_out = fields.Float("Planned sign out", readonly=True)
+    pl_work_hours = fields.Float("Planned Work Hours", readonly=True, compute='_compute_pl_work_hours')
+    
+    @api.depends('pl_sign_in', 'pl_sign_out')
+    def _compute_pl_work_hours(self):
+        for rec in self:
+            if rec.pl_sign_in and rec.pl_sign_out:
+                delta = rec.pl_sign_out - rec.pl_sign_in
+                rec.pl_work_hours = delta
+            else:
+                rec.pl_work_hours = False
+                
     worked_hours = fields.Float(string="Worked Hours", readonly=True, compute='_compute_worke_hours')
     ac_sign_in = fields.Float(string="Actual sign in", compute='_get_acutal_in_out', store=True)
     ac_sign_out = fields.Float(string="Actual sign out", compute='_get_acutal_in_out', store=True)
@@ -980,6 +1035,117 @@ class AttendanceSheetLine(models.Model):
                                          ('leave', 'Leave'), ],
                               required=False)
     note = fields.Text("Note")
+    
+    # abs   .Absence Hourly
+    # anl   .Annual Leave
+    # ovs   .Overtime SAT
+    # ov1   .OVT 1
+    # ovh
+    # prs   .Presence
+    # upl   .Unpaid Leave
+    # abd   .Absence Daily
+    # aul   Authorized Leave
+    # sna   .Sick Leave not approved
+    # uph   UNPAID HOURS
+    abs = fields.Float("Absence", readonly=True, compute='_calculate_attendance_type_details')
+    anl = fields.Float("Annual Leave", readonly=True, compute='_calculate_attendance_type_details')
+    ovs = fields.Float("Overtime SAT", readonly=True, compute='_calculate_attendance_type_details')
+    ov1 = fields.Float("OVT 1", readonly=True, compute='_calculate_attendance_type_details')
+    ovh = fields.Float("Overtime Hours", readonly=True, compute='_calculate_attendance_type_details')
+    prs = fields.Float("Presence", readonly=True, compute='_calculate_attendance_type_details')
+    upl = fields.Float("Unpaid Leave", readonly=True, compute='_calculate_attendance_type_details')
+    abd = fields.Float("Absence Daily", readonly=True, compute='_calculate_attendance_type_details')
+    aul = fields.Float("Authorized Leave", readonly=True, compute='_calculate_attendance_type_details')
+    sna = fields.Float("Sick Leave not approved", readonly=True, compute='_calculate_attendance_type_details')
+    uph = fields.Float("UNPAID HOURS", readonly=True, compute='_calculate_attendance_type_details')
+    ovt = fields.Float("Overtime", readonly=True, compute='_calculate_attendance_type_details')
+    
+    def get_leave_day_hour(self, leave):
+        leave_type = leave.holiday_status_id
+        request_unit = leave_type.request_unit
+        if request_unit in ['hour', 'half_day']:
+            return leave.number_of_hours
+        else:
+            return False
+
+    
+    @api.depends('act_late_in','act_diff_time','act_overtime', 'status')
+    def _calculate_attendance_type_details(self):
+        for record in self:
+            record.abs = 0.0    
+            record.anl = 0.0        
+            record.ovs = 0.0
+            record.ov1 = 0.0        
+            record.ovh = 0.0    
+            record.prs = 0.0    
+            record.upl = 0.0
+            record.abd = 0.0
+            record.aul = 0.0        
+            record.sna = 0.0
+            record.ovt = 0.0
+            record.uph = 0.0
+            
+            if record.status == 'ab':
+                record.anl = record.pl_work_hours
+                
+            if record.overtime:
+                if record.status in ['weekend']:
+                    record.ovs = record.overtime + 5
+                elif record.status in ['ph']:
+                    record.ovh = record.overtime 
+                else:       
+                    record.ovt = record.overtime
+            
+            record.prs = record.worked_hours
+            
+            public_holiday = record.att_sheet_id.get_public_holiday(record.date, record.employee_id)
+            
+            if not public_holiday:
+                public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
+            
+            leave = self.env['hr.leave'].search([('employee_id', '=', record.employee_id.id), ('date_from', '<=', record.date), ('date_to', '>=', record.date)])
+            if record.status == 'leave' or leave:
+                # get the leave type
+                if leave:
+                    if leave.holiday_status_id.presence_type_id:
+                        if leave.holiday_status_id.presence_type_id == "upl":
+                            record.upl = record.get_leave_day_hour(leave) or record.pl_work_hours
+                        elif leave.holiday_status_id.presence_type_id == "abd":
+                            record.abd = record.get_leave_day_hour(leave) or record.pl_work_hours
+                        elif leave.holiday_status_id.presence_type_id == "aul":
+                            record.aul = record.get_leave_day_hour(leave) or record.pl_work_hours
+                        elif leave.holiday_status_id.presence_type_id == "sna":
+                            record.sna = record.get_leave_day_hour(leave) or record.pl_work_hours
+                        elif leave.holiday_status_id.presence_type_id == "uph":
+                            record.uph = record.get_leave_day_hour(leave) or record.pl_work_hours
+                        
+                    else:
+                        record.anl = record.get_leave_day_hour(leave) or record.pl_work_hours
+            else:
+                record.anl = 0.0
+                record.sna = 0.0
+                record.upl = 0.0
+                record.aul = 0.0
+                record.uph = 0.0
+                record.ov1 = 0.0
+                record.upl = 0.0
+                
+                record.abs = record.act_diff_time + record.act_late_in
+            
+            if public_holiday:
+                record.ovh = record.worked_hours
+                record.status = 'ph'
+                record.ovt = 0.0
+                record.ovs = 0.0
+                record.prs = 0.0
+                record.abd = 0.0
+                record.anl = 0.0
+                record.sna = 0.0
+                record.upl = 0.0
+                record.aul = 0.0
+                record.uph = 0.0
+                record.ov1 = 0.0
+                record.abs = 0.0
 
     @api.depends('ac_sign_in', 'ac_sign_out')
     def _get_acutal_in_out(self):

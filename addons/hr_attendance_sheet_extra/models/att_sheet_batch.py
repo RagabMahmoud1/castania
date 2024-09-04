@@ -32,7 +32,7 @@ class AttendanceSheetBatch(models.Model):
 
     name = fields.Char("name")
     department_id = fields.Many2one('hr.department', 'Department Name',
-                                    required=True)
+                                    required=False)
 
     date_from = fields.Date(string='Date From', readonly=True, required=True,
                             default=lambda self: fields.Date.to_string(
@@ -68,15 +68,14 @@ class AttendanceSheetBatch(models.Model):
 
     @api.onchange('department_id', 'date_from', 'date_to')
     def onchange_employee(self):
-        if (not self.department_id) or (not self.date_from) or (
-                not self.date_to):
+        if(not self.date_from) or (not self.date_to):
             return
-        department = self.department_id
+        department_name = self.department_id.name or 'All Departments'
         date_from = self.date_from
         ttyme = datetime.combine(fields.Date.from_string(date_from), time.min)
         locale = self.env.context.get('lang', 'en_US')
         self.name = _('Attendance Batch of %s  Department for %s') % (
-            department.name,
+            department_name,
             tools.ustr(
                 babel.dates.format_date(date=ttyme,
                                         format='MMMM-y',
@@ -103,9 +102,11 @@ class AttendanceSheetBatch(models.Model):
         for batch in self:
             from_date = batch.date_from
             to_date = batch.date_to
-            employee_ids = self.env['hr.employee'].search(
-                [('department_id', '=', batch.department_id.id)])
-
+            if batch.department_id:
+                employee_ids = self.env['hr.employee'].search(
+                    [('department_id', '=', batch.department_id.id)])
+            else:
+                employee_ids = self.env['hr.employee'].search([])
             if not employee_ids:
                 raise UserError(_("There is no  Employees In This Department"))
             for employee in employee_ids:

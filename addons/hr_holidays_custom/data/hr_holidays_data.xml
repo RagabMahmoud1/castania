@@ -4,12 +4,12 @@
         <!-- Casual leave -->
         <record id="holiday_status_cl_custom_record_id" model="hr.leave.type">
             <field name="name">Legal Leave</field>
-            <field name="salary_setting">paid</field>
+            <!-- <field name="salary_setting">paid</field> -->
             <field name="request_unit">day</field>
-            <field name="color_name">lightgreen</field>
+            <field name="color">1</field>
             <field name="sequence">1</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">counter</field>
             <field name="unpaid">paid</field>
         </record>
@@ -17,12 +17,11 @@
         <!--Unpaid Leave -->
         <record id="holiday_status_unpaid_custom_record_id" model="hr.leave.type">
             <field name="name">Unpaid Leave</field>
-            <field name="salary_setting">unpaid</field>
             <field name="request_unit">day</field>
-            <field name="color_name">brown</field>
+            <field name="color">2</field>
             <field name="sequence">2</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">no</field>
             <field name="unpaid">unpaid</field>
         </record>
@@ -30,12 +29,11 @@
         <!--Sick Leave -->
         <record id="holiday_status_sick_custom_record_id" model="hr.leave.type">
             <field name="name">Sick Leave</field>
-            <field name="salary_setting">custom</field>
             <field name="request_unit">day</field>
-            <field name="color_name">red</field>
+            <field name="color">3</field>
             <field name="sequence">3</field>
             <field name="only_hr_validation">True</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">no</field>
             <field name="unpaid">custom</field>
         </record>
@@ -60,12 +58,11 @@
         <!--Giving Birth Leave -->
         <record id="holiday_status_giving_birth_custom_record_id" model="hr.leave.type">
             <field name="name">Giving Birth Leave</field>
-            <field name="salary_setting">paid</field>
             <field name="request_unit">day</field>
-            <field name="color_name">magenta</field>
+            <field name="color">4</field>
             <field name="sequence">4</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">fixed</field>
             <field name="unpaid">paid</field>
         </record>
@@ -73,12 +70,11 @@
         <!--Giving Haj and Umrah -->
         <record id="holiday_status_haj_and_umrah_custom_record_id" model="hr.leave.type">
             <field name="name">Haj and Umrah Leave</field>
-            <field name="salary_setting">paid</field>
             <field name="request_unit">day</field>
-            <field name="color_name">blue</field>
+            <field name="color">5</field>
             <field name="sequence">5</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">fixed</field>
             <field name="unpaid">paid</field>
         </record>
@@ -86,24 +82,22 @@
         <!--Giving Local -->
         <record id="holiday_status_local_custom_record_id" model="hr.leave.type">
             <field name="name">Local Leave</field>
-            <field name="salary_setting">paid</field>
             <field name="request_unit">day</field>
-            <field name="color_name">lightyellow</field>
+            <field name="color">6</field>
             <field name="sequence">6</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">fixed</field>
             <field name="unpaid">paid</field>
         </record>
         <!--<Marriage Leave>-->
          <record id="holiday_status_marriage_leave" model="hr.leave.type">
             <field name="name">Marriage Leave</field>
-            <field name="salary_setting">paid</field>
             <field name="request_unit">day</field>
-            <field name="color_name">lavender</field>
+            <field name="color">7</field>
             <field name="sequence">7</field>
             <field name="only_hr_validation">False</field>
-            <field name="double_validation">True</field>
+            <field name="has_valid_allocation">True</field>
             <field name="allocation_type">fixed</field>
         </record>
         <!-- Delete old leaves -->

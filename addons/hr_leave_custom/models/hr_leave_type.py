@@ -20,3 +20,11 @@ class HrLeaveType(models.Model):
     fixed = fields.Boolean(string='Fixed', default=False)
     presence_type = fields.Text(string='Duty on/ Duty off Presence Type', default=False)
         
+    presence_type_id = fields.Selection([
+        ('upl', 'UPL'),
+        ('abd', 'ABD'),
+        ('aul', 'AUL'),
+        ('sna', 'SNA'),
+        ('uph', 'UPH'),
+    ], string='Presence Type', default=False)
+    

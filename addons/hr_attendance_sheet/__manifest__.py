@@ -17,7 +17,8 @@
                 'hr',
                 'hr_payroll',
                 'hr_holidays',
-                'hr_attendance'],
+                'hr_attendance',
+                'hr_leave_custom'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

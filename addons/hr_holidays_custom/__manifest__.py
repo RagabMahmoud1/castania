@@ -13,7 +13,7 @@
         'hr_holidays','hr_custom'
     ],
     'data': [
-	    # 'views/template.xml',
+	    'views/template.xml',
         'views/hr_leave_views.xml',
         'views/hr_leave_allocation_views.xml',
         'views/hr_leave_type_view.xml',

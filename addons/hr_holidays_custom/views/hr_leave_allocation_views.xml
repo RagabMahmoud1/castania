@@ -20,37 +20,36 @@
         <field name="arch" type="xml">
 
             <xpath expr="//button[@name='action_refuse']" position="replace">
-                <button string="Refuse" name="action_refuse" states="confirm" type="object" groups="hr_custom.group_it_hr_manager"/>
+                <button string="Refuse" name="action_refuse" invisible="state != 'confirm'" type="object" groups="hr_custom.group_it_hr_manager"/>
                 <!--**********************************************************************-->
             </xpath>
-            <xpath expr="//button[@name='action_draft']" position="replace">
-                <button string="Reset to Draft" name="action_draft" type="object" states="refuse" groups="hr_custom.group_hr_coordinator"/>
-            </xpath>
+
             <!-- ################### IT CODE #################################-->
             <xpath expr="//button[@name='action_validate']" position="replace">
-                <button string="Approve" name="action_validate" states="confirm" type="object" groups="hr_custom.group_it_hr_manager" class="oe_highlight"/>
+                <button string="Approve" name="action_validate" invisible="state != 'confirm'" type="object" groups="hr_custom.group_it_hr_manager" class="oe_highlight"/>
             </xpath>
-            <xpath expr="//button[@name='action_approve']" position="replace">
-            </xpath>
+            
             <!-- ############################# END OF IT CODE ################-->
 
-            <xpath expr="//button[@name='action_confirm']" position="after">
+            <xpath expr="//button[@name='action_validate']" position="after">
                    <button string="Print Form" name="%(action_client_button_all)d" type="action"  class="oe_highlight" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"/>
             </xpath>
             <field name="holiday_type" position="replace">
-                <field name="holiday_type" string="Mode" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager" context="{'employee_id':employee_id}" />
+                <field name="holiday_type" string="Mode" context="{'employee_id':employee_id}" />
             </field>
-            <field name="employee_id" position="replace">
-                <field name="employee_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
-                    attrs="{'required': [('holiday_type', '=', 'employee')], 'invisible': [('holiday_type', '!=', 'employee')]}"/>
-            </field>
+            
+            <xpath expr="//field[@name='employee_id']" position="attributes">
+                <attribute name="required" >holiday_type == 'employee'</attribute>
+                <attribute name="invisible" >holiday_type != 'employee'</attribute>
+            </xpath>
             <field name="department_id" position="replace">
                 <field name="department_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
-                    attrs="{'required': [('holiday_type', '=', 'department')], 'invisible': [('holiday_type', 'not in', ('department', 'category'))]}"/>
+                invisible= "holiday_type not in ['department', 'category']"  required="holiday_type == 'department'"  />
             </field>
             <field name="mode_company_id" position="replace">
                 <field name="mode_company_id" groups="hr_custom.group_hr_coordinator,hr_custom.group_hr_supervisor,hr_custom.group_hr_manager,hr_custom.group_it_hr_manager"
-                    attrs="{'required': [('holiday_type', '=', 'company')], 'invisible': [('holiday_type', '!=', 'company')]}"/>
+                    required="holiday_type == 'company'" invisible="holiday_type != 'company'"
+                    />
             </field>
         </field>
     </record>
