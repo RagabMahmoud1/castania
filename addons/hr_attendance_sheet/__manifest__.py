@@ -10,7 +10,7 @@
     'author': "Ramadan Khalil",
     'website': "rkhalil1990@gmail.com",
     'category': 'hr',
-    'version': '13.001',
+    'version': '17.0',
     'images': ['static/description/bannar.jpg'],
 
     'depends': ['base',

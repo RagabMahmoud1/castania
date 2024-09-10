@@ -1014,7 +1014,9 @@ class AttendanceSheetLine(models.Model):
             else:
                 rec.pl_work_hours = False
                 
-    worked_hours = fields.Float(string="Worked Hours", readonly=True, compute='_compute_worke_hours')
+    worked_hours = fields.Float(string="Worked Hours", readonly=True, )
+    overtime = fields.Float("Overtime", readonly=True, store=True)
+    late_in = fields.Float("Late In", readonly=True, store=True)
     ac_sign_in = fields.Float(string="Actual sign in", compute='_get_acutal_in_out', store=True)
     ac_sign_out = fields.Float(string="Actual sign out", compute='_get_acutal_in_out', store=True)
     overtime = fields.Float("Overtime", readonly=True, compute='_compute_worke_hours', store=True)
@@ -1059,6 +1061,7 @@ class AttendanceSheetLine(models.Model):
     sna = fields.Float("Sick Leave not approved", readonly=True, compute='_calculate_attendance_type_details')
     uph = fields.Float("UNPAID HOURS", readonly=True, compute='_calculate_attendance_type_details')
     ovt = fields.Float("Overtime", readonly=True, compute='_calculate_attendance_type_details')
+    status_leave = fields.Char("Status Leave", compute='_calculate_attendance_type_details')
     
     def get_leave_day_hour(self, leave):
         leave_type = leave.holiday_status_id
@@ -1069,9 +1072,10 @@ class AttendanceSheetLine(models.Model):
             return False
 
     
-    @api.depends('act_late_in','act_diff_time','act_overtime', 'status')
+    @api.depends('late_in','diff_time','overtime', 'status')
     def _calculate_attendance_type_details(self):
         for record in self:
+            record.status_leave = ''
             record.abs = 0.0    
             record.anl = 0.0        
             record.ovs = 0.0
@@ -1090,7 +1094,7 @@ class AttendanceSheetLine(models.Model):
                 
             if record.overtime:
                 if record.status in ['weekend']:
-                    record.ovs = record.overtime + 5
+                    record.ovs = record.overtime
                 elif record.status in ['ph']:
                     record.ovh = record.overtime 
                 else:       
@@ -1098,16 +1102,14 @@ class AttendanceSheetLine(models.Model):
             
             record.prs = record.worked_hours
             
-            public_holiday = record.att_sheet_id.get_public_holiday(record.date, record.employee_id)
-            
-            if not public_holiday:
-                public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
+            public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
             
             leave = self.env['hr.leave'].search([('employee_id', '=', record.employee_id.id), ('date_from', '<=', record.date), ('date_to', '>=', record.date)])
             if record.status == 'leave' or leave:
                 # get the leave type
                 if leave:
                     if leave.holiday_status_id.presence_type_id:
+                        record.status_leave = leave.holiday_status_id.presence_type or ''
                         if leave.holiday_status_id.presence_type_id == "upl":
                             record.upl = record.get_leave_day_hour(leave) or record.pl_work_hours
                         elif leave.holiday_status_id.presence_type_id == "abd":
@@ -1130,11 +1132,12 @@ class AttendanceSheetLine(models.Model):
                 record.ov1 = 0.0
                 record.upl = 0.0
                 
-                record.abs = record.act_diff_time + record.act_late_in
+                record.abs = record.diff_time + record.late_in
             
             if public_holiday:
                 record.ovh = record.worked_hours
                 record.status = 'ph'
+                record.status_leave = public_holiday.presence_type or ''
                 record.ovt = 0.0
                 record.ovs = 0.0
                 record.prs = 0.0
@@ -1156,41 +1159,41 @@ class AttendanceSheetLine(models.Model):
 
 
 
-    @api.depends('ac_sign_in', 'ac_sign_out')
-    def _compute_worke_hours(self):
-        for attendance in self:
+    # @api.depends('ac_sign_in', 'ac_sign_out')
+    # def _compute_worke_hours(self):
+    #     for attendance in self:
 
-            if attendance.ac_sign_out and attendance.ac_sign_in:
-                delta = attendance.ac_sign_out - attendance.ac_sign_in
-                attendance.worked_hours = delta
-            else:
-                attendance.worked_hours = False
-             # OverTime
-            over = attendance.ac_sign_out - attendance.pl_sign_out
-            if attendance.pl_sign_in > attendance.ac_sign_in:
-                early = attendance.pl_sign_in - attendance.ac_sign_in
-            else:
-                early = False
-            attendance.overtime = (over + early) - attendance.late_in
+    #         if attendance.ac_sign_out and attendance.ac_sign_in:
+    #             delta = attendance.ac_sign_out - attendance.ac_sign_in
+    #             attendance.worked_hours = delta
+    #         else:
+    #             attendance.worked_hours = False
+    #          # OverTime
+    #         over = attendance.ac_sign_out - attendance.pl_sign_out
+    #         if attendance.pl_sign_in > attendance.ac_sign_in:
+    #             early = attendance.pl_sign_in - attendance.ac_sign_in
+    #         else:
+    #             early = False
+    #         attendance.overtime = (over + early) - attendance.late_in
 
-            if attendance.overtime < 0.0:
-                attendance.overtime = False
+    #         if attendance.overtime < 0.0:
+    #             attendance.overtime = False
                 
-            # LateIn
-            if attendance.ac_sign_in > attendance.pl_sign_in:
-                late = attendance.ac_sign_in - attendance.pl_sign_in
-                attendance.late_in = late
-            else:
-                attendance.late_in = False
-            # Diff Time
-            if attendance.ac_sign_out < attendance.pl_sign_out and attendance.status != 'ab' and attendance.status != 'leave':
-                diff = attendance.pl_sign_out - attendance.ac_sign_out
-                attendance.diff_time = diff
-            else:
-                attendance.diff_time = False
+    #         # LateIn
+    #         if attendance.ac_sign_in > attendance.pl_sign_in:
+    #             late = attendance.ac_sign_in - attendance.pl_sign_in
+    #             attendance.late_in = late
+    #         else:
+    #             attendance.late_in = False
+    #         # Diff Time
+    #         if attendance.ac_sign_out < attendance.pl_sign_out and attendance.status != 'ab' and attendance.status != 'leave':
+    #             diff = attendance.pl_sign_out - attendance.ac_sign_out
+    #             attendance.diff_time = diff
+    #         else:
+    #             attendance.diff_time = False
 
-            if not attendance.pl_sign_in and attendance.pl_sign_out:
-                attendance.status = 'weekend'
+    #         if not attendance.pl_sign_in and attendance.pl_sign_out:
+    #             attendance.status = 'weekend'
 
 
 

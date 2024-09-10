@@ -110,18 +110,21 @@
                                             <span t-esc="line.worked_hours" t-options='{"widget": "float_time"}'/>
                                         </td>
                                         <td>
-                                            <t t-if="line.status == 'weekend'">
-                                                <span>Duty Off</span>
+                                            <t t-if="line.status_leave and line.status_leave != ''">
+                                                <span t-esc="line.status_leave" />
                                             </t>
-                                            <t t-elif="line.status == 'ph'">
-                                                <span>Official Holiday</span>
+                                            <t t-else="">
+                                                <t t-if="line.status == 'weekend'">
+                                                    <span>Duty Off</span>
+                                                </t>
+                                                <t t-elif="line.status == 'ph'">
+                                                    <span>Official Holiday</span>
+                                                </t>
+                                                <t t-elif="line.status == 'leave'">
+                                                    <span>Assigned Absent ANL</span>
+                                                </t>
                                             </t>
-                                            <t t-elif="line.status == 'leave'">
-                                                <span>Assigned Absent ANL</span>
-                                            </t>
-                                            <!-- <t t-elif="line.act_late_in > 0 or line.act_diff_time > 0">
-                                                <span>Assigned Absent ANL</span>
-                                            </t> -->
+                                            
 
                                         </td>
                                         <td>
