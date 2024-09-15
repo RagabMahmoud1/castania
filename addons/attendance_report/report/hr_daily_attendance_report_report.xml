@@ -86,7 +86,7 @@
                                         <t t-set="sum_pl_work_hours"
                                             t-value="sum_pl_work_hours + line.pl_work_hours" />
                                         <t t-set="sum_abs" t-value="sum_abs + line.abs" />
-                                        <t t-set="sum_anl" t-value="sum_anl + line.anl" />
+                                        <!-- <t t-set="sum_anl" t-value="sum_anl + line.anl" /> -->
                                         <t t-set="sum_ovs" t-value="sum_ovs + line.ovs" />
                                         <t t-set="sum_ov1" t-value="sum_ov1 + line.ov1" />
                                         <t t-set="sum_ovt" t-value="sum_ovt + line.ovt" />

@@ -291,17 +291,35 @@ class AttendanceSheet(models.Model):
             leaves.append((date_from, date_to))
         return leaves
 
-    def get_public_holiday(self, date, emp):
+    def get_public_holiday(self, date, emp, start_datetime=None,
+                                end_datetime=None):
         public_holiday = []
-        public_holidays = self.env['hr.public.holiday'].sudo().search(
-            [('date_from', '<=', date), ('date_to', '>=', date),
-             ('state', '=', 'active')])
-        for ph in public_holidays:
-            print('ph is', ph.name, [e.name for e in ph.emp_ids])
-            if not ph.emp_ids:
-                return public_holidays
-            if emp.id in ph.emp_ids.ids:
-                public_holiday.append(ph.id)
+        # resource.calendar.leaves
+        calendar_leave = self.env['resource.calendar.leaves'].sudo().search(
+            [('date_from', '<=', date), ('date_to', '>=', date),('resource_id', '=', False)])
+        
+        if calendar_leave:
+            for leave in calendar_leave:
+                date_from = leave.date_from
+                date_to = leave.date_to
+                day_from = date_from.date()
+                day_to = date_to.date()
+                local_day_from = leave.date_from.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(emp.tz)).date()
+                local_day_to = leave.date_to.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(emp.tz)).date()
+                
+                current_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                if current_date >= local_day_from and current_date <= local_day_to:
+                    public_holiday.append(leave.id)
+        
+        # public_holidays = self.env['hr.public.holiday'].sudo().search(
+        #     [('date_from', '<=', date), ('date_to', '>=', date),
+        #         ('state', '=', 'active')])
+        # for ph in public_holidays:
+        #     print('ph is', ph.name, [e.name for e in ph.emp_ids])
+        #     if not ph.emp_ids:
+        #         return public_holidays
+        #     if emp.id in ph.emp_ids.ids:
+        #         public_holiday.append(ph.id)
         return public_holiday
 
 #############################################################################################
@@ -420,7 +438,7 @@ class AttendanceSheet(models.Model):
                                                                      day_end,
                                                                      tz)
                 leaves = self._get_emp_leave_intervals(emp, day_start, day_end)
-                public_holiday = self.get_public_holiday(date, emp)
+                public_holiday = self.get_public_holiday(date, emp, day_start, day_end)
                 reserved_intervals = []
                 overtime_policy = policy_id.get_overtime()
                 abs_flag = False
@@ -1014,17 +1032,17 @@ class AttendanceSheetLine(models.Model):
             else:
                 rec.pl_work_hours = False
                 
-    worked_hours = fields.Float(string="Worked Hours", readonly=True, )
+    worked_hours = fields.Float(string="Worked Hours", readonly=True, compute='_calculate_attendance_type_details')
     overtime = fields.Float("Overtime", readonly=True, store=True)
     late_in = fields.Float("Late In", readonly=True, store=True)
     ac_sign_in = fields.Float(string="Actual sign in", compute='_get_acutal_in_out', store=True)
     ac_sign_out = fields.Float(string="Actual sign out", compute='_get_acutal_in_out', store=True)
-    overtime = fields.Float("Overtime", readonly=True, compute='_compute_worke_hours', store=True)
+    overtime = fields.Float("Overtime", readonly=True, store=True)
     act_overtime = fields.Float("Actual Overtime", readonly=True)
-    late_in = fields.Float("Late In", readonly=True, compute='_compute_worke_hours', store=True)
+    late_in = fields.Float("Late In", readonly=True,  store=True)
     diff_time = fields.Float("Diff Time",
                              help="Diffrence between the working time and attendance time(s) ",
-                             readonly=True, compute='_compute_worke_hours', store=True)
+                             readonly=True, store=True)
     act_late_in = fields.Float("Actual Late In", readonly=True)
     act_diff_time = fields.Float("Actual Diff Time",
                                  help="Diffrence between the working time and attendance time(s) ",
@@ -1075,6 +1093,8 @@ class AttendanceSheetLine(models.Model):
     @api.depends('late_in','diff_time','overtime', 'status')
     def _calculate_attendance_type_details(self):
         for record in self:
+            
+            record.worked_hours = record.ac_sign_out - record.ac_sign_in
             record.status_leave = ''
             record.abs = 0.0    
             record.anl = 0.0        
@@ -1090,7 +1110,7 @@ class AttendanceSheetLine(models.Model):
             record.uph = 0.0
             
             if record.status == 'ab':
-                record.anl = record.pl_work_hours
+                record.abs = record.pl_work_hours
                 
             if record.overtime:
                 if record.status in ['weekend']:
@@ -1100,11 +1120,12 @@ class AttendanceSheetLine(models.Model):
                 else:       
                     record.ovt = record.overtime
             
-            record.prs = record.worked_hours
+            record.prs = record.worked_hours - record.act_overtime
             
-            public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
-            
-            leave = self.env['hr.leave'].search([('employee_id', '=', record.employee_id.id), ('date_from', '<=', record.date), ('date_to', '>=', record.date)])
+            # # public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
+            # public_holiday = self.env['hr.holidays.public.line'].search([('date', '=', record.date)])
+            # public_holiday = self.get_public_holiday(record.date, record.employee_id)
+            leave = self.env['hr.leave'].search([('employee_id', '=', record.employee_id.id), ('date_from', '<=', record.date), ('date_to', '>=', record.date), ('state', '=', 'validate')])
             if record.status == 'leave' or leave:
                 # get the leave type
                 if leave:
@@ -1132,12 +1153,12 @@ class AttendanceSheetLine(models.Model):
                 record.ov1 = 0.0
                 record.upl = 0.0
                 
-                record.abs = record.diff_time + record.late_in
+                # record.abs = record.diff_time + record.late_in
             
-            if public_holiday:
-                record.ovh = record.worked_hours
+            if record.status == 'ph':
+                record.ovh = record.overtime
                 record.status = 'ph'
-                record.status_leave = public_holiday.presence_type or ''
+                # record.status_leave = public_holiday.presence_type or ''
                 record.ovt = 0.0
                 record.ovs = 0.0
                 record.prs = 0.0
@@ -1158,7 +1179,35 @@ class AttendanceSheetLine(models.Model):
                 rec.ac_sign_out = rec.ac_sign_out
 
 
-
+    def get_public_holiday(self, date, emp, start_datetime=None,
+                                end_datetime=None):
+        public_holiday = []
+        # resource.calendar.leaves
+        calendar_leave = self.env['resource.calendar.leaves'].sudo().search([('date_from', '<=', date), ('date_to', '>=', date),])
+        
+        if calendar_leave:
+            for leave in calendar_leave:
+                date_from = leave.date_from
+                date_to = leave.date_to
+                day_from = date_from.date()
+                day_to = date_to.date()
+                local_day_from = leave.date_from.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(emp.tz)).date()
+                local_day_to = leave.date_to.replace(tzinfo=pytz.utc).astimezone(pytz.timezone(emp.tz)).date()
+                
+                current_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+                if current_date >= local_day_from and current_date <= local_day_to:
+                    public_holiday.append(leave.id)
+        
+        # public_holidays = self.env['hr.public.holiday'].sudo().search(
+        #     [('date_from', '<=', date), ('date_to', '>=', date),
+        #         ('state', '=', 'active')])
+        # for ph in public_holidays:
+        #     print('ph is', ph.name, [e.name for e in ph.emp_ids])
+        #     if not ph.emp_ids:
+        #         return public_holidays
+        #     if emp.id in ph.emp_ids.ids:
+        #         public_holiday.append(ph.id)
+        return public_holiday    
     # @api.depends('ac_sign_in', 'ac_sign_out')
     # def _compute_worke_hours(self):
     #     for attendance in self:
