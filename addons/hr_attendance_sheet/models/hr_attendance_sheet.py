@@ -755,13 +755,25 @@ class AttendanceSheet(models.Model):
                             ac_sign_out = pytz.utc.localize(
                                 attendance_interval[1]).astimezone(tz)
                             float_overtime = overtime.total_seconds() / 3600
-                            if float_overtime <= overtime_policy['we_after']:
+                            # get the day name
+                            day_name = day.strftime('%A')
+                            if day_name == 'Sunday':
+                                _after = overtime_policy['su_after']
+                                _rate = overtime_policy['su_rate']
+                            elif day_name == 'Saturday':
+                                _after = overtime_policy['sa_after']
+                                _rate = overtime_policy['sa_rate']
+                            else:
+                                _after = overtime_policy['we_after']
+                                _rate = overtime_policy['we_rate']
+                                
+                            if float_overtime <= _after:
                                 float_overtime = 0
                                 act_float_overtime = 0
                             else:
                                 act_float_overtime = float_overtime
                                 float_overtime = act_float_overtime * \
-                                                 overtime_policy['we_rate']
+                                                    _rate
                             ac_sign_in = pytz.utc.localize(
                                 attendance_interval[0]).astimezone(tz)
                             ac_sign_out = pytz.utc.localize(
@@ -1124,7 +1136,8 @@ class AttendanceSheetLine(models.Model):
             
             # # public_holiday = self.env['resource.calendar.leaves'].search([('date_from', '<=', record.date), ('date_to', '>=', record.date)])
             # public_holiday = self.env['hr.holidays.public.line'].search([('date', '=', record.date)])
-            # public_holiday = self.get_public_holiday(record.date, record.employee_id)
+            date = record.date.strftime('%Y-%m-%d')
+            public_holiday = self.get_public_holiday(date, record.employee_id)
             leave = self.env['hr.leave'].search([('employee_id', '=', record.employee_id.id), ('date_from', '<=', record.date), ('date_to', '>=', record.date), ('state', '=', 'validate')])
             if record.status == 'leave' or leave:
                 # get the leave type
@@ -1153,12 +1166,17 @@ class AttendanceSheetLine(models.Model):
                 record.ov1 = 0.0
                 record.upl = 0.0
                 
-                # record.abs = record.diff_time + record.late_in
+                record.abs = record.diff_time + record.late_in
+                
             
-            if record.status == 'ph':
+            if record.status == 'ph' or public_holiday:
+                
                 record.ovh = record.overtime
                 record.status = 'ph'
-                # record.status_leave = public_holiday.presence_type or ''
+                if public_holiday and len(public_holiday) > 0:
+                    if public_holiday[0]:
+                        record.status_leave =  public_holiday[0] or 'Public Holiday'
+                    
                 record.ovt = 0.0
                 record.ovs = 0.0
                 record.prs = 0.0
@@ -1170,6 +1188,11 @@ class AttendanceSheetLine(models.Model):
                 record.uph = 0.0
                 record.ov1 = 0.0
                 record.abs = 0.0
+            
+            # check Absence
+            if record.status == 'ab':
+                record.abs = record.pl_work_hours
+                record.status_leave = 'Absence'
 
     @api.depends('ac_sign_in', 'ac_sign_out')
     def _get_acutal_in_out(self):
@@ -1183,7 +1206,7 @@ class AttendanceSheetLine(models.Model):
                                 end_datetime=None):
         public_holiday = []
         # resource.calendar.leaves
-        calendar_leave = self.env['resource.calendar.leaves'].sudo().search([('date_from', '<=', date), ('date_to', '>=', date),])
+        calendar_leave = self.env['resource.calendar.leaves'].sudo().search([('date_from', '<=', date), ('date_to', '>=', date),('resource_id', '=', False)])
         
         if calendar_leave:
             for leave in calendar_leave:
@@ -1196,7 +1219,7 @@ class AttendanceSheetLine(models.Model):
                 
                 current_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
                 if current_date >= local_day_from and current_date <= local_day_to:
-                    public_holiday.append(leave.id)
+                    public_holiday.append(leave.presence_type)
         
         # public_holidays = self.env['hr.public.holiday'].sudo().search(
         #     [('date_from', '<=', date), ('date_to', '>=', date),

@@ -48,6 +48,13 @@ class HrAttendancePolicy(models.Model):
             ph_ot_id = self.overtime_rule_ids.search(
                 [('type', '=', 'ph'), ('id', 'in', overtime_ids.ids)],
                 order='id', limit=1)
+            su_ot_id = self.overtime_rule_ids.search(
+                [('type', '=', 'sunday'), ('id', 'in', overtime_ids.ids)],
+                order='id', limit=1)
+            sa_ot_id = self.overtime_rule_ids.search(
+                [('type', '=', 'saturday'), ('id', 'in', overtime_ids.ids)],
+                order='id', limit=1)
+            
             if wd_ot_id:
                 res['wd_rate'] = wd_ot_id.rate
                 res['wd_after'] = wd_ot_id.active_after
@@ -67,6 +74,21 @@ class HrAttendancePolicy(models.Model):
             else:
                 res['ph_rate'] = 1
                 res['ph_after'] = 0
+            
+            if su_ot_id:
+                res['su_rate'] = su_ot_id.rate
+                res['su_after'] = su_ot_id.active_after
+            else:
+                res['su_rate'] = 1
+                res['su_after'] = 0
+            
+            if sa_ot_id:
+                res['sa_rate'] = sa_ot_id.rate
+                res['sa_after'] = sa_ot_id.active_after
+            else:
+                res['sa_rate'] = 1
+                res['sa_after'] = 0
+            
         else:
             res['wd_rate'] = res['wd_rate'] = res['ph_rate'] = 1
             res['wd_after'] = res['we_after'] = res['ph_after'] = 0
@@ -164,7 +186,9 @@ class HrOvertimeRule(models.Model):
     type = [
         ('weekend', 'Week End'),
         ('workday', 'Working Day'),
-        ('ph', 'Public Holiday')
+        ('ph', 'Public Holiday'),
+        ('sunday', 'Sunday'),
+        ('saturday', 'Saturday')
 
     ]
 
