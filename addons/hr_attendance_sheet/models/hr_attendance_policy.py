@@ -171,6 +171,11 @@ class HrPolicy_overtimeLine(models.Model):
                                 help="After this time the overtime will be calculated")
     rate = fields.Float(string='Rate')
     attendance_policy_id = fields.Many2one(comodel_name='hr.attendance.policy')
+   # active_before = fields.Float(string="Apply before",
+    #                            help="before this time the overtime will be calculated")
+    #rate_before = fields.Float(string='Rate')
+    
+    #attendance_policy_id = fields.Many2one(comodel_name='hr.attendance.policy')
 
     @api.onchange('overtime_rule_id')
     def onchange_ov_id(self):
@@ -197,6 +202,9 @@ class HrOvertimeRule(models.Model):
     active_after = fields.Float(string="Apply after",
                                 help="After this time the overtime will be calculated")
     rate = fields.Float(string='Rate')
+    active_before = fields.Float(string="Apply before")
+    rate_before = fields.Float(string='Rate')
+                                  
 
 
 class HrLateRule(models.Model):

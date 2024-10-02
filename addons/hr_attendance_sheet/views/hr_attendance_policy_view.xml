@@ -12,7 +12,8 @@
                         <field name="type"/>
                         <field name="active_after" widget="float_time"/>
                         <field name="rate"/>
-
+                        <field name="active_before" widget="float_time"/>
+                        <field name="rate_before"/>
                     </group>
                 </sheet>
             </form>
