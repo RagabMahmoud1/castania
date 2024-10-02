@@ -437,6 +437,9 @@ class AttendanceSheet(models.Model):
                                                                      day_start,
                                                                      day_end,
                                                                      tz)
+                for at_int in attendance_intervals:
+                    if at_int[0] == at_int[1]:
+                        attendance_intervals.remove(at_int)
                 leaves = self._get_emp_leave_intervals(emp, day_start, day_end)
                 public_holiday = self.get_public_holiday(date, emp, day_start, day_end)
                 reserved_intervals = []
@@ -1126,7 +1129,12 @@ class AttendanceSheetLine(models.Model):
                 
             if record.overtime:
                 if record.status in ['weekend']:
-                    record.ovs = record.overtime
+                    # check the day name
+                    day_name = record.date.strftime('%A')
+                    if day_name == 'Sunday':
+                        record.ovh = record.overtime
+                    else:
+                        record.ovs = record.overtime
                 elif record.status in ['ph']:
                     record.ovh = record.overtime 
                 else:       
@@ -1191,7 +1199,7 @@ class AttendanceSheetLine(models.Model):
             
             # check Absence
             if record.status == 'ab':
-                record.abs = record.pl_work_hours
+                record.abd = record.pl_work_hours
                 record.status_leave = 'Absence'
 
     @api.depends('ac_sign_in', 'ac_sign_out')
