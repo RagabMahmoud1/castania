@@ -507,6 +507,8 @@ class AttendanceSheet(models.Model):
                                                 seconds=00)
                             overtime = timedelta(hours=00, minutes=00,
                                                  seconds=00)
+                            overtime_before = timedelta(hours=00, minutes=00,
+                                                 seconds=00)
                             for j, att_interval in enumerate(
                                     attendance_intervals):
                                 if max(work_interval[0], att_interval[0]) < min(
@@ -555,12 +557,26 @@ class AttendanceSheet(models.Model):
                                     overtime_interval = (
                                         work_interval[1],
                                         att_work_intervals[-1][1])
+                                    
+                                    overtime_interval_before = (
+                                        work_interval[0],
+                                        att_work_intervals[0][1])
+                                    
+                                    
                                     if overtime_interval[1] < overtime_interval[0]:
                                         overtime = timedelta(hours=0, minutes=0,
                                                              seconds=0)
                                     else:
                                         overtime = overtime_interval[1] - \
                                                    overtime_interval[0]
+                                    
+                                    if overtime_interval_before[0] < overtime_interval_before[1]:
+                                        overtime_before = timedelta(hours=0, minutes=0,
+                                                             seconds=0)
+                                    else:
+                                        overtime_before = overtime_interval_before[0] - \
+                                                   overtime_interval_before[1]
+                                    
                                     remain_interval = (
                                         att_work_intervals[0][1],
                                         work_interval[1])
@@ -617,6 +633,11 @@ class AttendanceSheet(models.Model):
                                     overtime_interval = (
                                         work_interval[1],
                                         att_work_intervals[-1][1])
+                                    
+                                    overtime_interval_before = (
+                                        work_interval[0],
+                                        att_work_intervals[0][0])
+                                    
                                     if overtime_interval[1] < overtime_interval[
                                         0]:
                                         overtime = timedelta(hours=0, minutes=0,
@@ -629,6 +650,15 @@ class AttendanceSheet(models.Model):
                                     else:
                                         overtime = overtime_interval[1] - \
                                                    overtime_interval[0]
+                                                   
+                                    if overtime_interval_before[0] < overtime_interval_before[1]:
+                                        overtime_before = timedelta(hours=0, minutes=0,
+                                                             seconds=0)
+                                    else:
+                                        overtime_before = overtime_interval_before[0] - \
+                                                   overtime_interval_before[1]
+                                                   
+                                    
                                     ac_sign_in = self._get_float_from_time(
                                         pytz.utc.localize(att_work_intervals[0][
                                                               0]).astimezone(
@@ -680,6 +710,18 @@ class AttendanceSheet(models.Model):
                                 float_overtime = float_overtime * \
                                                  overtime_policy[
                                                      'wd_rate']
+                            
+                            # before
+                            float_overtime_before = overtime_before.total_seconds() / 3600
+                            if float_overtime_before <= overtime_policy['wd_before'] :
+                                act_float_overtime_before = float_overtime_before = 0
+                            else:
+                                act_float_overtime_before = float_overtime_before
+                                float_overtime_before = float_overtime_before * \
+                                                 overtime_policy[
+                                                     'wd_rate_before']
+                                
+                            
                             float_late = late_in.total_seconds() / 3600
                             act_float_late = late_in.total_seconds() / 3600
                             policy_late = policy_id.get_late(float_late)
@@ -704,8 +746,10 @@ class AttendanceSheet(models.Model):
                                 'ac_sign_out': ac_sign_out,
                                 'late_in': policy_late,
                                 'act_late_in': act_float_late,
-                                'overtime': float_overtime,
-                                'act_overtime': act_float_overtime,
+                                'overtime': float_overtime + float_overtime_before,
+                                'act_overtime': act_float_overtime + act_float_overtime_before,
+                                'overtime_before': float_overtime_before,
+                                'act_overtime_before': act_float_overtime_before,
                                 'diff_time': float_diff,
                                 'act_diff_time': act_float_diff,
                                 'status': status,
@@ -1054,6 +1098,8 @@ class AttendanceSheetLine(models.Model):
     ac_sign_out = fields.Float(string="Actual sign out", compute='_get_acutal_in_out', store=True)
     overtime = fields.Float("Overtime", readonly=True, store=True)
     act_overtime = fields.Float("Actual Overtime", readonly=True)
+    overtime_before = fields.Float("Overtime Before", readonly=True, store=True)
+    act_overtime_before = fields.Float("Actual Overtime Before", readonly=True)
     late_in = fields.Float("Late In", readonly=True,  store=True)
     diff_time = fields.Float("Diff Time",
                              help="Diffrence between the working time and attendance time(s) ",
@@ -1201,6 +1247,7 @@ class AttendanceSheetLine(models.Model):
             if record.status == 'ab':
                 record.abd = record.pl_work_hours
                 record.status_leave = 'Absence'
+                record.abs = 0.0
 
     @api.depends('ac_sign_in', 'ac_sign_out')
     def _get_acutal_in_out(self):

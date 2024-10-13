@@ -125,54 +125,53 @@
                                                 </t>
                                             </t>
                                             
-
                                         </td>
                                         <td>
-                                            <span t-esc="line.pl_sign_in"
+                                            <span t-if="line.pl_sign_in > 0" t-esc="line.pl_sign_in"
                                                 t-options='{"widget": "float_time"}' />
                                         </td>
                                         <td>
-                                            <span t-esc="line.pl_sign_out"
+                                            <span t-esc="line.pl_sign_out"  t-if="line.pl_sign_out > 0"
                                                 t-options='{"widget": "float_time"}' />
                                         </td>
                                         <td>
-                                            <span t-esc="(line.pl_work_hours)" t-options='{"widget": "float_time"}'/>
+                                            <span t-if="line.pl_work_hours > 0" t-esc="(line.pl_work_hours)" t-options='{"widget": "float_time"}'/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.abs, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-if="line.abs > 0" t-esc="round(line.abs, 2)"  t-options='{"widget": "float_time"}'/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.anl, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.anl, 2)"  t-options='{"widget": "float_time"}' t-if="line.anl > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.ovs, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.ovs, 2)"  t-options='{"widget": "float_time"}' t-if="line.ovs > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.ov1, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.ov1, 2)"  t-options='{"widget": "float_time"}' t-if="line.ov1 > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.ovt, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.ovt, 2)"  t-options='{"widget": "float_time"}' t-if="line.ovt > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.ovh, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.ovh, 2)"  t-options='{"widget": "float_time"}' t-if="line.ovh > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.prs, 2)" t-options='{"widget": "float_time"}' />
+                                            <span t-esc="round(line.prs, 2)" t-options='{"widget": "float_time"}'  t-if="line.prs > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.upl, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.upl, 2)"  t-options='{"widget": "float_time"}' t-if="line.upl > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.abd, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.abd, 2)"  t-options='{"widget": "float_time"}' t-if="line.abd > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.aul, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.aul, 2)"  t-options='{"widget": "float_time"}' t-if="line.aul > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.sna, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.sna, 2)"  t-options='{"widget": "float_time"}' t-if="line.sna > 0"/>
                                         </td>
                                         <td>
-                                            <span t-esc="round(line.uph, 2)"  t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.uph, 2)"  t-options='{"widget": "float_time"}' t-if="line.uph > 0"/>
                                         </td>
                                         <td>
                                             <span />
@@ -189,19 +188,19 @@
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td t-esc="round(sum_pl_work_hours, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_abs, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_anl, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_ovs, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_ov1, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_ovt, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_ovh, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_prs, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_upl, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_abd, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_aul, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_sna, 2)" t-options='{"widget": "float_time"}'></td>
-                                    <td t-esc="round(sum_uph, 2)" t-options='{"widget": "float_time"}'></td>
+                                    <td><span t-esc="round(sum_pl_work_hours, 2)" t-options='{"widget": "float_time"}' t-if="int(sum_pl_work_hours) > 0" /></td>
+                                    <td ><span t-esc="round(sum_abs, 2)" t-options='{"widget": "float_time"}' t-if="sum_abs > 0"/></td>
+                                    <td ><span t-esc="round(sum_anl, 2)" t-options='{"widget": "float_time"}' t-if="sum_anl > 0"/></td>
+                                    <td ><span t-esc="round(sum_ovs, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovs > 0"/></td>
+                                    <td ><span t-esc="round(sum_ov1, 2)" t-options='{"widget": "float_time"}' t-if="sum_ov1 > 0"/></td>
+                                    <td ><span t-esc="round(sum_ovt, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovt > 0"/></td>
+                                    <td ><span t-esc="round(sum_ovh, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovh > 0"/></td>
+                                    <td ><span t-esc="round(sum_prs, 2)" t-options='{"widget": "float_time"}' t-if="sum_prs > 0"/></td>
+                                    <td ><span t-esc="round(sum_upl, 2)" t-options='{"widget": "float_time"}' t-if="sum_upl > 0"/></td>
+                                    <td ><span t-esc="round(sum_abd, 2)" t-options='{"widget": "float_time"}' t-if="sum_abd > 0"/></td>
+                                    <td ><span t-esc="round(sum_aul, 2)" t-options='{"widget": "float_time"}' t-if="sum_aul > 0"/></td>
+                                    <td ><span t-esc="round(sum_sna, 2)" t-options='{"widget": "float_time"}' t-if="sum_sna > 0"/></td>
+                                    <td ><span t-esc="round(sum_uph, 2)" t-options='{"widget": "float_time"}' t-if="sum_uph > 0"/></td>
                                     <td></td>
                                 </tr>
 
@@ -214,19 +213,19 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td t-esc="round(sum_pl_work_hours2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_abs2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_anl2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_ovs2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_ov12, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_ovt2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_ovh2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_prs2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_upl2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_abd2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_aul2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_sna2, 2)" t-options='{"widget": "float_time"}'></td>
-                                        <td t-esc="round(sum_uph2, 2)" t-options='{"widget": "float_time"}'></td>
+                                        <td><span t-esc="round(sum_pl_work_hours2, 2)" t-options='{"widget": "float_time"}' t-if="int(sum_pl_work_hours2) > 0"/></td>
+                                        <td ><span t-esc="round(sum_abs2, 2)" t-options='{"widget": "float_time"}' t-if="sum_abs2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_anl2, 2)" t-options='{"widget": "float_time"}' t-if="sum_anl2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_ovs2, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovs2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_ov12, 2)" t-options='{"widget": "float_time"}' t-if="sum_ov12 > 0"/></td>
+                                        <td ><span t-esc="round(sum_ovt2, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovt2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_ovh2, 2)" t-options='{"widget": "float_time"}' t-if="sum_ovh2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_prs2, 2)" t-options='{"widget": "float_time"}' t-if="sum_prs2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_upl2, 2)" t-options='{"widget": "float_time"}' t-if="sum_upl2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_abd2, 2)" t-options='{"widget": "float_time"}' t-if="sum_abd2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_aul2, 2)" t-options='{"widget": "float_time"}' t-if="sum_aul2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_sna2, 2)" t-options='{"widget": "float_time"}' t-if="sum_sna2 > 0"/></td>
+                                        <td ><span t-esc="round(sum_uph2, 2)" t-options='{"widget": "float_time"}' t-if="sum_uph2 > 0"/></td>
                                         <td></td>
                                     </tr>
                                 </t>

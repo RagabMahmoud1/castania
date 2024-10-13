@@ -101,6 +101,14 @@
                                            widget="float_time"
                                            optional="show"
                                            sum="Total"/>
+                                    <field name="act_overtime_before"
+                                           optional="hide"
+                                           widget="float_time"
+                                           sum="Total"/>
+                                    <field name="overtime_before"
+                                           widget="float_time"
+                                           optional="hide"
+                                           sum="Total"/>
                                     <field name="act_diff_time"
                                            optional="hide"
                                            widget="float_time"
