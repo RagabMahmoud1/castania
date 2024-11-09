@@ -107,7 +107,7 @@
                                                 t-options='{"widget": "float_time"}' />
                                         </td>
                                         <td>
-                                            <span t-esc="line.worked_hours" t-options='{"widget": "float_time"}'/>
+                                            <span t-esc="round(line.worked_hours, 2)" t-options='{"widget": "float_time"}'/>
                                         </td>
                                         <td>
                                             <t t-if="line.status_leave and line.status_leave != ''">
@@ -135,7 +135,7 @@
                                                 t-options='{"widget": "float_time"}' />
                                         </td>
                                         <td>
-                                            <span t-if="line.pl_work_hours > 0" t-esc="(line.pl_work_hours)" t-options='{"widget": "float_time"}'/>
+                                            <span t-if="line.pl_work_hours > 0" t-esc="round(line.pl_work_hours, 2)" t-options='{"widget": "float_time"}'/>
                                         </td>
                                         <td>
                                             <span t-if="line.abs > 0" t-esc="round(line.abs, 2)"  t-options='{"widget": "float_time"}'/>
@@ -184,7 +184,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>Totals : </td>
-                                    <td t-esc="sum_worked_hours" t-options='{"widget": "float_time"}'></td>
+                                    <td t-esc="round(sum_worked_hours,2)" t-options='{"widget": "float_time"}'></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
